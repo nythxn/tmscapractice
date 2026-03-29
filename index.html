@@ -1214,11 +1214,20 @@
       color: rgba(255, 255, 255, 0.9);
       letter-spacing: 0.1em;
     }
+
+    .footer {
+      font-size: 11px;
+      color: var(--text3);
+      text-align: center;
+      padding: 6px 10px;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+    }
   </style>
 </head>
 
 <body>
-
   <div id="authScreen">
     <div class="auth-card">
       <div class="auth-logo">
@@ -1417,6 +1426,12 @@
     </div>
 
   </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      TMSCA Number Sense Practice • Made for for the Ereckson Middle School Number Sense Team by Simon Wei
+    </div>
+  </footer>
 
   <script>
     function switchAuthTab(tab) {
