@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TMSCA Number Sense Practice</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, get, update, onValue, remove }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import {
+      getAuth, onAuthStateChanged,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      signOut, GoogleAuthProvider, signInWithPopup,
+      updateProfile, sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAoS3qVFufJCJkuGgBy2JCeupz0p8HSSyU",
+      authDomain: "nspractice-298c0.firebaseapp.com",
+      databaseURL: "https://nspractice-298c0-default-rtdb.firebaseio.com",
+      projectId: "nspractice-298c0",
+      storageBucket: "nspractice-298c0.firebasestorage.app",
+      messagingSenderId: "403709324332",
+      appId: "1:403709324332:web:672c73ccb6ccf50f307589"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    window._db = db;
+    window._auth = auth;
+    window._ref = ref;
+    window._set = set;
+    window._get = get;
+    window._update = update;
+    window._onValue = onValue;
+    window._remove = remove;
+    window._createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+    window._signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window._signOut = signOut;
+    window._GoogleAuthProvider = GoogleAuthProvider;
+    window._signInWithPopup = signInWithPopup;
+    window._updateProfile = updateProfile;
+    window._sendPasswordResetEmail = sendPasswordResetEmail;
+    window._firebaseReady = true;
+
+    onAuthStateChanged(auth, user => {
+      window._currentUser = user;
+      if (user) {
+        window.onUserLoggedIn(user);
+      } else {
+        window.onUserLoggedOut();
+      }
+    });
+  </script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --amber: #f5a623;
+      --amber-dark: #d4891a;
+      --amber-pale: #fff4e0;
+      --amber-bg: #fef9f0;
+      --white: #ffffff;
+      --text: #1a1206;
+      --text2: #5a4a2a;
+      --text3: #9a8060;
+      --border: #e8d5aa;
+      --shadow: rgba(180, 120, 30, 0.12);
+      --green: #4caf50;
+      --red: #ef5350;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--amber-bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    #authScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      background: linear-gradient(160deg, #fff8ee 0%, #fde8b8 100%);
+    }
+
+    .auth-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 40px rgba(180, 100, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .auth-logo-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--amber);
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(200, 120, 0, 0.3);
+    }
+
+    .auth-logo-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .auth-logo-sub {
+      font-size: 13px;
+      color: var(--text3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+
+    /* tabs */
+    .auth-tabs {
+      display: flex;
+      background: #f5f0e8;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      color: var(--text3);
+    }
+
+    .auth-tab.active {
+      background: var(--white);
+      color: var(--text);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .auth-form.hidden {
+      display: none;
+    }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .auth-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      letter-spacing: 0.04em;
+    }
+
+    .auth-input {
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+      background: var(--white);
+    }
+
+    .auth-input:focus {
+      border-color: var(--amber);
+    }
+
+    .auth-btn {
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-top: 4px;
+    }
+
+    .auth-btn.primary {
+      background: var(--amber);
+      color: #fff;
+    }
+
+    .auth-btn.primary:hover {
+      background: var(--amber-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(180, 100, 0, 0.3);
+    }
+
+    .auth-btn.primary:disabled {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0;
+    }
+
+    .auth-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .auth-divider-text {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 600;
+    }
+
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .google-btn:hover {
+      border-color: #aaa;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .auth-forgot {
+      text-align: right;
+      font-size: 12px;
+      color: var(--amber-dark);
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: -4px;
+      text-decoration: underline;
+    }
+
+    .auth-forgot:hover {
+      color: var(--amber);
+    }
+
+    .auth-status {
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      min-height: 18px;
+    }
+
+    .auth-status.error {
+      color: var(--red);
+    }
+
+    .auth-status.ok {
+      color: var(--green);
+    }
+
+    #appShell {
+      display: none;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--amber);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 52px;
+      box-shadow: 0 2px 12px rgba(180, 100, 0, 0.25);
+    }
+
+    .header-logo {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 5px 12px 5px 5px;
+    }
+
+    .header-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--amber-dark);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .header-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .header-uname {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      max-width: 90px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .header-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    /* NAV */
+    .nav {
+      display: flex;
+      gap: 8px;
+      padding: 14px 20px 0;
+      background: var(--amber-bg);
+      justify-content: center;
+    }
+
+    .nav-tab {
+      padding: 9px 22px;
+      border-radius: 24px;
+      border: 2px solid transparent;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab.active {
+      background: var(--amber);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(200, 120, 0, 0.3);
+    }
+
+    .nav-tab:not(.active) {
+      background: var(--white);
+      color: var(--amber-dark);
+      border-color: var(--border);
+    }
+
+    .nav-tab:not(.active):hover {
+      border-color: var(--amber);
+    }
+
+    .banner {
+      text-align: center;
+      padding: 8px 20px;
+      font-size: 11.5px;
+      color: var(--text2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* GRID */
+    .grid-wrap {
+      padding: 4px 14px 40px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .topic-tile {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 4px var(--shadow);
+      min-height: 58px;
+    }
+
+    .topic-tile:hover {
+      border-color: var(--amber);
+      box-shadow: 0 3px 14px rgba(200, 120, 0, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .tile-label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 10px 8px 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .tile-action {
+      width: 40px;
+      background: var(--amber);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .topic-tile:hover .tile-action {
+      background: var(--amber-dark);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(30, 15, 0, 0.55);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      max-height: 94vh;
+      animation: mpop 0.2s ease;
+    }
+
+    @keyframes mpop {
+      from {
+        transform: scale(0.92);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .modal-header {
+      background: var(--amber);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .modal-close {
+      background: rgba(255, 255, 255, 0.25);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    #paneInfo {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .info-rule {
+      background: var(--amber-pale);
+      border-left: 4px solid var(--amber);
+      border-radius: 0 10px 10px 0;
+      padding: 13px 15px;
+    }
+
+    .info-rule-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--amber-dark);
+      margin-bottom: 5px;
+    }
+
+    .info-rule-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text2);
+    }
+
+    .info-ex {
+      background: #f0fff2;
+      border-left: 4px solid var(--green);
+      border-radius: 0 10px 10px 0;
+      padding: 13px 15px;
+    }
+
+    .info-ex-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #2e7d32;
+      margin-bottom: 8px;
+    }
+
+    .ex-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ex-chip {
+      background: #fff;
+      border: 1.5px solid #c8e6c9;
+      border-radius: 8px;
+      padding: 5px 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .start-drill-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--amber);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .start-drill-btn:hover {
+      background: var(--amber-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(180, 100, 0, 0.3);
+    }
+
+    #paneDrill {
+      background: var(--amber);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      min-height: 420px;
+      padding: 24px 28px 28px;
+      gap: 0;
+    }
+
+    #paneDrill.active {
+      display: flex;
+    }
+
+    .drill-topbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      align-self: center;
+      margin-bottom: 28px;
+    }
+
+    .drill-pill {
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--amber-dark);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .drill-clock {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      padding: 14px 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--amber-dark);
+      letter-spacing: 0.03em;
+      margin-bottom: 24px;
+      align-self: center;
+    }
+
+    .drill-question-text {
+      font-size: clamp(28px, 7vw, 40px);
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+
+    .drill-input-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+      align-self: center;
+    }
+
+    .drill-input {
+      flex: 1;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.92);
+      border: none;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      outline: none;
+      transition: box-shadow 0.15s;
+    }
+
+    .drill-input:focus {
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6);
+    }
+
+    .drill-input.correct {
+      background: #c8f7cc;
+    }
+
+    .drill-input.wrong {
+      background: #ffd0d0;
+    }
+
+    .drill-submit {
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .drill-submit:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .opp-bar {
+      width: 100%;
+      max-width: 400px;
+      align-self: center;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .opp-bar.show {
+      display: flex;
+    }
+
+    .opp-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .opp-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .opp-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      min-width: 80px;
+    }
+
+    .opp-pips {
+      display: flex;
+      gap: 5px;
+    }
+
+    .opp-pip {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    .opp-pip.done {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: #fff;
+      color: var(--amber-dark);
+    }
+
+    .lead-badge {
+      align-self: center;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    #paneResults {
+      background: var(--amber);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 28px 32px;
+      gap: 0;
+    }
+
+    #paneResults.active {
+      display: flex;
+    }
+
+    .res-topbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .res-clock {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      padding: 12px 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--amber-dark);
+      letter-spacing: 0.03em;
+      margin-bottom: 20px;
+      align-self: center;
+    }
+
+    .res-winner-banner {
+      display: none;
+      align-self: center;
+      margin-bottom: 16px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 14px;
+      padding: 10px 24px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+    }
+
+    .res-winner-banner.show {
+      display: block;
+    }
+
+    .res-table {
+      width: 100%;
+      max-width: 480px;
+      align-self: center;
+    }
+
+    .res-row {
+      display: flex;
+      align-items: baseline;
+      padding: 5px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .res-row:last-child {
+      border-bottom: none;
+    }
+
+    .res-eq {
+      flex: 1;
+    }
+
+    .res-divider {
+      width: 1px;
+      background: rgba(255, 255, 255, 0.4);
+      margin: 0 16px;
+      align-self: stretch;
+    }
+
+    .res-time {
+      width: 70px;
+      text-align: right;
+      font-style: italic;
+    }
+
+    .res-avg {
+      margin-top: 18px;
+      align-self: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .res-avg strong {
+      font-size: 26px;
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .res-restart {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 14px;
+      width: 56px;
+      height: 56px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      align-self: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .res-restart:hover {
+      background: #fff;
+      transform: rotate(-20deg) scale(1.05);
+    }
+
+    .mp-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(30, 15, 0, 0.65);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .mp-overlay.open {
+      display: flex;
+    }
+
+    .mp-box {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      animation: mpop 0.2s ease;
+    }
+
+    .mp-header {
+      background: var(--amber);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mp-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .mp-close {
+      background: rgba(255, 255, 255, 0.25);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mp-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mp-pane {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mp-pane.active {
+      display: flex;
+    }
+
+    .mp-input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .mp-input:focus {
+      border-color: var(--amber);
+    }
+
+    .mp-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--amber);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .mp-btn:hover {
+      background: var(--amber-dark);
+    }
+
+    .mp-btn.secondary {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text2);
+    }
+
+    .mp-btn.secondary:hover {
+      border-color: var(--amber);
+      color: var(--amber-dark);
+      background: transparent;
+    }
+
+    .mp-code-display {
+      text-align: center;
+      padding: 20px;
+      background: var(--amber-pale);
+      border-radius: 14px;
+    }
+
+    .mp-code-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--amber-dark);
+      margin-bottom: 8px;
+    }
+
+    .mp-code-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.12em;
+    }
+
+    .mp-status {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .mp-status.error {
+      color: var(--red);
+    }
+
+    .mp-status.ok {
+      color: var(--green);
+    }
+
+    .topic-select-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .topic-select-btn {
+      padding: 10px 12px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.13s;
+      color: var(--text);
+    }
+
+    .topic-select-btn:hover {
+      border-color: var(--amber);
+      background: var(--amber-pale);
+    }
+
+    .topic-select-btn.selected {
+      border-color: var(--amber);
+      background: var(--amber);
+      color: #fff;
+    }
+
+    .waiting-screen {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: var(--amber);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      border-radius: 20px;
+    }
+
+    .waiting-screen.show {
+      display: flex;
+    }
+
+    .waiting-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .waiting-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .waiting-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🧮</div>
+        <div class="auth-logo-title">TMSCA Number Sense Practice</div>
+        <div class="auth-logo-sub">Practice for TMSCA Number Sense</div>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+
+      <div class="auth-form" id="formSignIn">
+        <div class="auth-field">
+          <div class="auth-label">Email</div>
+          <input class="auth-input" id="siEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <div class="auth-label">Password</div>
+          <input class="auth-input" id="siPassword" type="password" placeholder="••••••••"
+            autocomplete="current-password">
+          <div class="auth-forgot" onclick="forgotPassword()">Forgot password?</div>
+        </div>
+        <button class="auth-btn primary" onclick="emailSignIn()">Sign In →</button>
+        <div class="auth-divider">
+          <div class="auth-divider-line"></div>
+          <div class="auth-divider-text">or</div>
+          <div class="auth-divider-line"></div>
+        </div>
+        <button class="google-btn" onclick="googleSignIn()">
+          <svg class="google-icon" viewBox="0 0 48 48">
+            <path fill="#FFC107"
+              d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z" />
+            <path fill="#FF3D00"
+              d="M6.3 14.7l7 5.1C15 16.1 19.1 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.5 6.1 29.5 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z" />
+            <path fill="#4CAF50"
+              d="M24 44c5.2 0 10-1.9 13.6-5l-6.3-5.2C29.4 35.6 26.8 36 24 36c-5.2 0-9.5-2.9-11.3-7.1l-7 5.4C9.5 39.5 16.3 44 24 44z" />
+            <path fill="#1976D2"
+              d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.6-4.8 6l6.3 5.2C40.5 35.6 44 30.3 44 24c0-1.3-.1-2.7-.4-4z" />
+          </svg>
+          Continue with Google
+        </button>
+        <div class="auth-status" id="siStatus"></div>
+      </div>
+
+      <div class="auth-form hidden" id="formSignUp">
+        <div class="auth-field">
+          <div class="auth-label">Display Name</div>
+          <input class="auth-input" id="suName" type="text" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <div class="auth-label">Email</div>
+          <input class="auth-input" id="suEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <div class="auth-label">Password</div>
+          <input class="auth-input" id="suPassword" type="password" placeholder="At least 6 characters"
+            autocomplete="new-password">
+        </div>
+        <button class="auth-btn primary" onclick="emailSignUp()">Create Account →</button>
+        <div class="auth-divider">
+          <div class="auth-divider-line"></div>
+          <div class="auth-divider-text">or</div>
+          <div class="auth-divider-line"></div>
+        </div>
+        <button class="google-btn" onclick="googleSignIn()">
+          <svg class="google-icon" viewBox="0 0 48 48">
+            <path fill="#FFC107"
+              d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z" />
+            <path fill="#FF3D00"
+              d="M6.3 14.7l7 5.1C15 16.1 19.1 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.5 6.1 29.5 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z" />
+            <path fill="#4CAF50"
+              d="M24 44c5.2 0 10-1.9 13.6-5l-6.3-5.2C29.4 35.6 26.8 36 24 36c-5.2 0-9.5-2.9-11.3-7.1l-7 5.4C9.5 39.5 16.3 44 24 44z" />
+            <path fill="#1976D2"
+              d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.6-4.8 6l6.3 5.2C40.5 35.6 44 30.3 44 24c0-1.3-.1-2.7-.4-4z" />
+          </svg>
+          Continue with Google
+        </button>
+        <div class="auth-status" id="suStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="appShell">
+
+    <div class="header">
+      <div class="header-logo">TMSCA Number Sense Practice</div>
+      <div class="header-right">
+        <button class="header-btn" onclick="openMultiplayer()">🎮 Multiplayer</button>
+        <div class="header-user" onclick="signOutUser()" title="Sign out" style="cursor:pointer">
+          <div class="header-avatar" id="headerAvatar">?</div>
+          <div class="header-uname" id="headerUname">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-tab active" onclick="setTab('random',this)">🔀 Random</button>
+      <button class="nav-tab" onclick="setTab('all',this)">📋 All Topics</button>
+    </div>
+    <div class="banner">Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.</div>
+    <div class="grid-wrap" id="topicGrid"></div>
+
+    <div class="modal-overlay" id="modal" onclick="overlayClick(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="modalTitle">Topic</div>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" style="position:relative;">
+          <div id="paneInfo">
+            <div class="info-rule">
+              <div class="info-rule-label">📐 Rule</div>
+              <div class="info-rule-text" id="infoRuleText"></div>
+            </div>
+            <div class="info-ex">
+              <div class="info-ex-label">✎ Examples</div>
+              <div class="ex-chips" id="infoExamples"></div>
+            </div>
+            <button class="start-drill-btn" onclick="beginDrill(false)">▶ Start Drill (5 questions)</button>
+          </div>
+          <div id="paneDrill">
+            <div class="drill-topbar">
+              <div class="drill-pill" id="dCounter">1/5</div>
+              <div class="drill-pill" id="dTopbarClock">00:00.00</div>
+            </div>
+            <div class="drill-clock" id="dBigClock">00:00.00</div>
+            <div class="opp-bar" id="oppBar">
+              <div class="opp-label">Opponent</div>
+              <div class="opp-progress-wrap">
+                <div class="opp-name" id="oppName">—</div>
+                <div class="opp-pips" id="oppPips"></div>
+              </div>
+              <div class="lead-badge" id="leadBadge"></div>
+            </div>
+            <div class="drill-question-text" id="dQuestion"></div>
+            <div class="drill-input-row">
+              <input class="drill-input" id="dInput" type="number" placeholder="?" autocomplete="off"
+                inputmode="numeric">
+              <button class="drill-submit" onclick="submitAnswer()">→</button>
+            </div>
+            <div class="waiting-screen" id="waitingScreen">
+              <div class="waiting-spinner"></div>
+              <div class="waiting-text">Waiting for opponent…</div>
+              <div class="waiting-code" id="waitingCode"></div>
+              <div style="font-size:13px;color:rgba(255,255,255,0.7);">Share this code</div>
+            </div>
+          </div>
+          <div id="paneResults">
+            <div class="res-topbar">
+              <div class="drill-pill" id="rCounter">5/5</div>
+              <div class="drill-pill" id="rTopClock">00:00.00</div>
+            </div>
+            <div class="res-clock" id="rBigClock">00:00.00</div>
+            <div class="res-winner-banner" id="winnerBanner"></div>
+            <div class="res-table" id="resTable"></div>
+            <div class="res-avg" id="resAvg"></div>
+            <button class="res-restart" onclick="restartAfterDrill()" title="Restart">↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mp-overlay" id="mpOverlay" onclick="mpOverlayClick(event)">
+      <div class="mp-box">
+        <div class="mp-header">
+          <div class="mp-title">🎮 Multiplayer</div>
+          <button class="mp-close" onclick="closeMultiplayer()">✕</button>
+        </div>
+        <div class="mp-body">
+          <div class="mp-pane active" id="mpLobby">
+            <button class="mp-btn" onclick="mpCreate()">Create Room</button>
+            <div style="text-align:center;font-size:12px;color:var(--text3);">— or —</div>
+            <input class="mp-input" id="mpJoinCode" placeholder="Room code" maxlength="6"
+              style="text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;font-size:18px;text-align:center;">
+            <button class="mp-btn secondary" onclick="mpJoin()">Join Room</button>
+            <div class="mp-status" id="mpLobbyStatus"></div>
+          </div>
+          <div class="mp-pane" id="mpPickTopic">
+            <div style="font-size:14px;font-weight:700;color:var(--text2);">Pick a topic for the race:</div>
+            <div class="topic-select-grid" id="mpTopicGrid"></div>
+            <button class="mp-btn" id="mpStartRaceBtn" onclick="mpStartRace()" disabled>Start Race →</button>
+            <div class="mp-status" id="mpPickStatus"></div>
+          </div>
+          <div class="mp-pane" id="mpWaitPane">
+            <div class="mp-code-display">
+              <div class="mp-code-label">Room Code</div>
+              <div class="mp-code-val" id="mpCodeDisplay">—</div>
+            </div>
+            <div class="mp-status" id="mpWaitStatus">Waiting for opponent…</div>
+            <button class="mp-btn secondary" onclick="mpCancelRoom()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchAuthTab(tab) {
+      document.getElementById('tabSignIn').classList.toggle('active', tab === 'signin');
+      document.getElementById('tabSignUp').classList.toggle('active', tab === 'signup');
+      document.getElementById('formSignIn').classList.toggle('hidden', tab !== 'signin');
+      document.getElementById('formSignUp').classList.toggle('hidden', tab !== 'signup');
+      document.getElementById('siStatus').textContent = '';
+      document.getElementById('suStatus').textContent = '';
+    }
+
+    function authStatus(id, msg, cls = '') {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = 'auth-status' + (cls ? ' ' + cls : '');
+    }
+
+    async function emailSignIn() {
+      if (!window._firebaseReady) { authStatus('siStatus', 'Firebase not configured.', 'error'); return; }
+      const email = document.getElementById('siEmail').value.trim();
+      const pass = document.getElementById('siPassword').value;
+      if (!email || !pass) { authStatus('siStatus', 'Fill in all fields.', 'error'); return; }
+      authStatus('siStatus', 'Signing in…');
+      try {
+        await window._signInWithEmailAndPassword(window._auth, email, pass);
+      } catch (e) {
+        authStatus('siStatus', friendlyAuthError(e.code), 'error');
+      }
+    }
+
+    async function emailSignUp() {
+      if (!window._firebaseReady) { authStatus('suStatus', 'Firebase not configured.', 'error'); return; }
+      const name = document.getElementById('suName').value.trim();
+      const email = document.getElementById('suEmail').value.trim();
+      const pass = document.getElementById('suPassword').value;
+      if (!name || !email || !pass) { authStatus('suStatus', 'Fill in all fields.', 'error'); return; }
+      authStatus('suStatus', 'Creating account…');
+      try {
+        const cred = await window._createUserWithEmailAndPassword(window._auth, email, pass);
+        await window._updateProfile(cred.user, { displayName: name });
+      } catch (e) {
+        authStatus('suStatus', friendlyAuthError(e.code), 'error');
+      }
+    }
+
+    async function googleSignIn() {
+      if (!window._firebaseReady) { authStatus('siStatus', 'Firebase not configured.', 'error'); return; }
+      try {
+        const provider = new window._GoogleAuthProvider();
+        await window._signInWithPopup(window._auth, provider);
+      } catch (e) {
+        authStatus('siStatus', friendlyAuthError(e.code), 'error');
+      }
+    }
+
+    async function forgotPassword() {
+      if (!window._firebaseReady) return;
+      const email = document.getElementById('siEmail').value.trim();
+      if (!email) { authStatus('siStatus', 'Enter your email above first.', 'error'); return; }
+      try {
+        await window._sendPasswordResetEmail(window._auth, email);
+        authStatus('siStatus', 'Reset email sent! Check your inbox.', 'ok');
+      } catch (e) {
+        authStatus('siStatus', friendlyAuthError(e.code), 'error');
+      }
+    }
+
+    async function signOutUser() {
+      if (!window._firebaseReady) return;
+      if (!confirm('Sign out?')) return;
+      await window._signOut(window._auth);
+    }
+
+    function friendlyAuthError(code) {
+      const map = {
+        'auth/invalid-email': 'Invalid email address.',
+        'auth/user-not-found': 'No account with that email.',
+        'auth/wrong-password': 'Incorrect password.',
+        'auth/email-already-in-use': 'Email already in use.',
+        'auth/weak-password': 'Password must be at least 6 characters.',
+        'auth/popup-closed-by-user': 'Sign-in popup was closed.',
+        'auth/invalid-credential': 'Incorrect email or password.',
+        'auth/too-many-requests': 'Too many attempts. Try again later.',
+        'auth/network-request-failed': 'Network error. Check your connection.',
+      };
+      return map[code] || 'Something went wrong. Try again.';
+    }
+
+    window.onUserLoggedIn = function (user) {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('appShell').style.display = 'block';
+
+      const name = user.displayName || user.email.split('@')[0];
+      document.getElementById('headerUname').textContent = name;
+      const av = document.getElementById('headerAvatar');
+      if (user.photoURL) {
+        av.innerHTML = `<img src="${user.photoURL}" alt="">`;
+      } else {
+        av.textContent = name.charAt(0).toUpperCase();
+      }
+
+      MP.myName = name;
+
+      renderGrid([...T].sort(() => Math.random() - .5));
+      ['paneDrill', 'paneResults'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+      document.getElementById('paneInfo').style.display = 'flex';
+    };
+
+    window.onUserLoggedOut = function () {
+      document.getElementById('appShell').style.display = 'none';
+      document.getElementById('authScreen').style.display = 'flex';
+    };
+
+    function ri(lo, hi) { return Math.floor(Math.random() * (hi - lo + 1)) + lo; }
+    function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+    function lcm(a, b) { return a * b / gcd(a, b); }
+    function toRoman(n) {
+      const v = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+      const s = ['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
+      let r = ''; for (let i = 0; i < v.length; i++)while (n >= v[i]) { r += s[i]; n -= v[i]; } return r;
+    }
+    function fmtTime(ms) {
+      const tot = ms / 1000, m = Math.floor(tot / 60);
+      const s = (tot % 60).toFixed(2).padStart(5, '0');
+      return `${String(m).padStart(2, '0')}:${s}`;
+    }
+    function randCode() {
+      const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      return Array.from({ length: 6 }, () => c[ri(0, c.length - 1)]).join('');
+    }
+
+    const T = [
+      { id: 'n11', label: 'n × 11', rule: 'Add the two digits and insert between them. Carry if ≥ 10.', ex: ['23 × 11 = 253', '87 × 11 = 957'], gen() { const n = ri(12, 999); return { q: `${n} × 11`, a: n * 11 }; } },
+      { id: 'n25', label: 'n × 25', rule: 'Multiply by 100 then divide by 4.', ex: ['12 × 25 = 300', '52 × 25 = 1300'], gen() { const n = ri(2, 80); return { q: `${n} × 25`, a: n * 25 }; } },
+      { id: 'n101', label: 'n × 101', rule: 'n × 101 = n × 100 + n.', ex: ['12 × 101 = 1212'], gen() { const n = ri(11, 99); return { q: `${n} × 101`, a: n * 101 }; } },
+      { id: 'n111', label: 'n × 111', rule: 'n × 111 = n×100 + n×10 + n.', ex: ['12 × 111 = 1332'], gen() { const n = ri(11, 89); return { q: `${n} × 111`, a: n * 111 }; } },
+      { id: 'nmod', label: 'n mod x', rule: 'Remainder after dividing n by x.', ex: ['47 mod 5 = 2'], gen() { const x = ri(2, 12); const n = ri(x + 1, 100); return { q: `${n} mod ${x}`, a: n % x }; } },
+      { id: 'nsub', label: 'n − x', rule: 'Two/three-digit subtraction.', ex: ['83 − 47 = 36'], gen() { const a = ri(20, 500); const b = ri(1, a - 1); return { q: `${a} − ${b}`, a: a - b }; } },
+      { id: 'nadd', label: 'n + x', rule: 'Two/three-digit addition.', ex: ['47 + 68 = 115'], gen() { const a = ri(10, 500); const b = ri(10, 500); return { q: `${a} + ${b}`, a: a + b }; } },
+      { id: 'foil', label: 'FOIL', rule: '(a+b)(c+d) = ac + ad + bc + bd.', ex: ['(2+3)(4+5) = 45'], gen() { const a = ri(1, 12), b = ri(1, 12), c = ri(1, 12), d = ri(1, 12); return { q: `(${a}+${b})(${c}+${d})`, a: (a + b) * (c + d) }; } },
+      { id: 'sq1040', label: 'Squares (10–40)', rule: '(a+b)² = a²+2ab+b². Anchor to nearest ten.', ex: ['23² = 529'], gen() { const n = ri(10, 40); return { q: `${n}²`, a: n * n }; } },
+      { id: 'sq4160', label: 'Squares (41–60)', rule: '(50±n)² = 2500±100n+n².', ex: ['48² = 2304'], gen() { const n = ri(41, 60); return { q: `${n}²`, a: n * n }; } },
+      { id: 'tens', label: 'Tens Trick', rule: '(10+a)(10+b) = 100 + 10(a+b) + ab.', ex: ['13 × 14 = 182'], gen() { const a = ri(11, 19); const b = ri(11, 19); return { q: `${a} × ${b}`, a: a * b }; } },
+      { id: 'arith', label: 'Arithmetic Series', rule: 'Sum = (n/2)(first + last).', ex: ['1+2+…+10 = 55'], gen() { const a = ri(1, 10), d = ri(1, 5), n = ri(3, 8); const last = a + (n - 1) * d, sum = n * (a + last) / 2; return { q: `${a}+${a + d}+…+${last} (${n} terms)`, a: sum }; } },
+      { id: 'est', label: 'Estimation', rule: 'Round, multiply, adjust.', ex: ['49×51 ≈ 2499'], gen() { const a = ri(12, 95); const b = ri(12, 95); return { q: `${a} × ${b}`, a: a * b }; } },
+      { id: 'mult100', label: '< 100 Mult.', rule: '47×38 = 47×40 − 47×2.', ex: ['47 × 38 = 1786'], gen() { const a = ri(12, 99); const b = ri(12, 99); return { q: `${a} × ${b}`, a: a * b }; } },
+      { id: 'mult100p', label: '> 100 Mult.', rule: '124×13 = 124×10 + 124×3.', ex: ['124 × 13 = 1612'], gen() { const a = ri(101, 250); const b = ri(11, 20); return { q: `${a} × ${b}`, a: a * b }; } },
+      { id: 'roman', label: 'Roman Numerals', rule: 'IV=4 IX=9 XL=40 XC=90 CD=400 CM=900.', ex: ['XIV = 14'], gen() { const n = ri(1, 99); return { q: `${toRoman(n)} = ?`, a: n }; } },
+      { id: 'cubes', label: 'Cubes', rule: 'Memorize 1³–15³.', ex: ['7³ = 343', '12³ = 1728'], gen() { const n = ri(2, 12); return { q: `${n}³`, a: n * n * n }; } },
+      { id: 'gcd', label: 'GCD', rule: 'GCD(a,b) = GCD(b, a mod b).', ex: ['GCD(48,18) = 6'], gen() { const g = ri(2, 10); const a = g * ri(2, 9); const b = g * ri(2, 9); return { q: `GCD(${a}, ${b})`, a: gcd(a, b) }; } },
+      { id: 'lcm', label: 'LCM', rule: 'LCM(a,b) = a×b / GCD(a,b).', ex: ['LCM(4,6) = 12'], gen() { const a = ri(2, 15); const b = ri(2, 15); return { q: `LCM(${a}, ${b})`, a: lcm(a, b) }; } },
+      { id: 'tri', label: 'Triangular Nos.', rule: 'T(n) = n(n+1)/2.', ex: ['T(5) = 15'], gen() { const n = ri(2, 15); return { q: `T(${n}) = ?`, a: n * (n + 1) / 2 }; } },
+      { id: 'pent', label: 'Pentagonal Nos.', rule: 'P(n) = n(3n−1)/2.', ex: ['P(3) = 12'], gen() { const n = ri(2, 12); return { q: `P(${n}) = ?`, a: n * (3 * n - 1) / 2 }; } },
+      { id: 'hex', label: 'Hexagonal Nos.', rule: 'H(n) = n(2n−1).', ex: ['H(3) = 15'], gen() { const n = ri(2, 12); return { q: `H(${n}) = ?`, a: n * (2 * n - 1) }; } },
+      { id: 'fib', label: 'Fibonacci', rule: 'F(n)=F(n-1)+F(n-2), F(1)=F(2)=1.', ex: ['F(7) = 13'], gen() { const f = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377]; const n = ri(3, 12); return { q: `F(${n}) = ?`, a: f[n] }; } },
+      { id: 'sumcubes', label: 'Sum of n Cubes', rule: '1³+…+n³ = [n(n+1)/2]².', ex: ['1³+2³+3³ = 36'], gen() { const n = ri(2, 8); const t = n * (n + 1) / 2; return { q: `1³+2³+…+${n}³`, a: t * t }; } },
+      { id: 'diff2sq', label: 'Diff of Squares', rule: 'x²−y² = (x+y)(x−y).', ex: ['15²−13² = 56'], gen() { const x = ri(5, 25); const y = ri(1, x - 1); return { q: `${x}²−${y}²`, a: x * x - y * y }; } },
+      { id: '3sq', label: '3-digit Squares', rule: '(100+n)² = 10000+200n+n².', ex: ['105² = 11025'], gen() { const n = ri(101, 130); return { q: `${n}²`, a: n * n }; } },
+      { id: '3cube', label: '3-digit Cubes', rule: 'Memorize or use (a+b)³.', ex: ['11³ = 1331'], gen() { const n = ri(10, 15); return { q: `${n}³`, a: n * n * n }; } },
+      { id: '3foil', label: '3-digit FOIL', rule: 'Group partial products carefully.', ex: ['102 × 104 = 10608'], gen() { const a = ri(101, 115); const b = ri(101, 115); return { q: `${a} × ${b}`, a: a * b }; } },
+      { id: 'geomean', label: 'Geometric Mean', rule: 'GM(a,b) = √(ab).', ex: ['GM(4,9) = 6'], gen() { const bases = [2, 3, 4, 5, 6, 7]; const b = bases[ri(0, bases.length - 1)]; const n = ri(1, 3); return { q: `GM(${b ** n}, ${b ** (n + 2)})`, a: b ** (n + 1) }; } },
+      { id: 'mean', label: 'Mean / Median', rule: 'Mean = sum/count. Median = middle after sorting.', ex: ['Mean{2,4,6} = 4'], gen() { const c = ri(3, 6); const v = Array.from({ length: c }, () => ri(1, 30)).sort((a, b) => a - b); const type = Math.random() < .5 ? 'mean' : 'median'; let ans; if (type === 'mean') ans = Math.round(v.reduce((s, x) => s + x, 0) / c * 10) / 10; else { const m = Math.floor(c / 2); ans = c % 2 ? v[m] : (v[m - 1] + v[m]) / 2; } return { q: `${type[0].toUpperCase() + type.slice(1)}{${v.join(',')}}`, a: ans }; } },
+    ];
+
+    let curTopic = null;
+    const DRILL_N = 5;
+    let D = {};
+
+    function renderGrid(topics) {
+      const g = document.getElementById('topicGrid');
+      g.innerHTML = '';
+      topics.forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'topic-tile';
+        el.onclick = () => openTopic(t);
+        el.innerHTML = `<div class="tile-label">${t.label}</div><div class="tile-action">?</div>`;
+        g.appendChild(el);
+      });
+    }
+    function setTab(tab, btn) {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(tab === 'random' ? [...T].sort(() => Math.random() - .5) : T);
+    }
+
+    function showPane(id) {
+      ['paneInfo', 'paneDrill', 'paneResults'].forEach(pid => {
+        const el = document.getElementById(pid);
+        el.style.display = 'none'; el.classList.remove('active');
+      });
+      const el = document.getElementById(id);
+      el.style.display = 'flex'; el.classList.add('active');
+    }
+    function openTopic(t) {
+      curTopic = t;
+      document.getElementById('modalTitle').textContent = t.label;
+      document.getElementById('infoRuleText').textContent = t.rule;
+      document.getElementById('infoExamples').innerHTML = t.ex.map(e => `<span class="ex-chip">${e}</span>`).join('');
+      stopDrillTimer(); mpCleanupListeners();
+      document.getElementById('oppBar').classList.remove('show');
+      document.getElementById('winnerBanner').classList.remove('show');
+      showPane('paneInfo');
+      document.getElementById('modal').classList.add('open');
+    }
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      stopDrillTimer(); mpCleanupListeners();
+    }
+    function overlayClick(e) {
+      if (e.target === document.getElementById('modal')) closeModal();
+    }
+
+    function beginDrill(isMultiplayer, sharedQs) {
+      stopDrillTimer(); mpCleanupListeners();
+      const qs = (isMultiplayer && sharedQs) ? sharedQs : Array.from({ length: DRILL_N }, () => curTopic.gen());
+      D = { qs, answers: [], i: 0, startMs: null, qStartMs: null, raf: null, totalMs: 0, isMP: !!isMultiplayer };
+      document.getElementById('oppBar').classList.toggle('show', !!isMultiplayer);
+      document.getElementById('winnerBanner').classList.remove('show');
+      document.getElementById('waitingScreen').classList.remove('show');
+      showPane('paneDrill');
+      document.getElementById('dCounter').textContent = `1/${DRILL_N}`;
+      document.getElementById('dBigClock').textContent = '00:00.00';
+      document.getElementById('dTopbarClock').textContent = '00:00.00';
+      if (isMultiplayer) renderOppPips(0);
+      showDrillQ();
+    }
+    function showDrillQ() {
+      const q = D.qs[D.i];
+      document.getElementById('dCounter').textContent = `${D.i + 1}/${DRILL_N}`;
+      document.getElementById('dQuestion').textContent = q.q;
+      const inp = document.getElementById('dInput');
+      inp.value = ''; inp.className = 'drill-input'; inp.focus();
+      inp.onkeydown = e => { if (e.key === 'Enter') submitAnswer(); };
+      inp.oninput = () => checkLive();
+      if (D.i === 0) { D.startMs = performance.now(); D.qStartMs = D.startMs; startDrillTimer(); }
+      else { D.qStartMs = performance.now(); }
+    }
+    function startDrillTimer() {
+      function tick() {
+        const str = fmtTime(performance.now() - D.startMs);
+        document.getElementById('dBigClock').textContent = str;
+        document.getElementById('dTopbarClock').textContent = str;
+        D.raf = requestAnimationFrame(tick);
+      }
+      D.raf = requestAnimationFrame(tick);
+    }
+    function stopDrillTimer() { if (D && D.raf) cancelAnimationFrame(D.raf); }
+    function checkLive() {
+      const val = parseFloat(document.getElementById('dInput').value.trim());
+      if (isNaN(val)) return;
+      if (Math.abs(val - D.qs[D.i].a) < 0.01) submitAnswer();
+    }
+    function submitAnswer() {
+      const inp = document.getElementById('dInput');
+      const val = parseFloat(inp.value.trim());
+      if (isNaN(val)) return;
+      const now = performance.now();
+      const q = D.qs[D.i];
+      const correct = Math.abs(val - q.a) < 0.01;
+      D.answers.push({ q: q.q, ans: q.a, userAns: val, correct, ms: now - D.qStartMs });
+      inp.className = 'drill-input ' + (correct ? 'correct' : 'wrong');
+      if (correct) {
+        D.i++;
+        if (D.isMP) mpPushProgress(D.i);
+        if (D.i >= DRILL_N) {
+          stopDrillTimer(); D.totalMs = performance.now() - D.startMs;
+          if (D.isMP) mpPushFinish(D.totalMs);
+          showResults();
+        } else { showDrillQ(); }
+      } else { inp.select(); }
+    }
+    function showResults(winnerText) {
+      showPane('paneResults');
+      const ts = fmtTime(D.totalMs);
+      document.getElementById('rCounter').textContent = `${DRILL_N}/${DRILL_N}`;
+      document.getElementById('rTopClock').textContent = ts;
+      document.getElementById('rBigClock').textContent = ts;
+      const banner = document.getElementById('winnerBanner');
+      if (winnerText) { banner.textContent = winnerText; banner.classList.add('show'); }
+      else { banner.classList.remove('show'); }
+      const table = document.getElementById('resTable'); table.innerHTML = '';
+      let tot = 0;
+      D.answers.forEach((a, i) => {
+        const sec = (a.ms / 1000).toFixed(2); tot += a.ms / 1000;
+        const row = document.createElement('div'); row.className = 'res-row';
+        row.innerHTML = `<div class="res-eq" style="opacity:${a.correct ? 1 : 0.6}">${i + 1})${a.q} = ${a.ans}${!a.correct ? ` <span style="color:#ffd0d0;font-size:12px">(${a.userAns})</span>` : ''}</div><div class="res-divider"></div><div class="res-time">${sec}s</div>`;
+        table.appendChild(row);
+      });
+      document.getElementById('resAvg').innerHTML = `<strong>${(tot / D.answers.length).toFixed(2)}s</strong> per question`;
+    }
+    function restartAfterDrill() {
+      if (D.isMP) { closeModal(); openMultiplayer(); }
+      else { beginDrill(false); }
+    }
+    function renderOppPips(done) {
+      const c = document.getElementById('oppPips'); c.innerHTML = '';
+      for (let i = 0; i < DRILL_N; i++) {
+        const pip = document.createElement('div');
+        pip.className = 'opp-pip' + (i < done ? ' done' : '');
+        pip.textContent = i < done ? '✓' : i + 1;
+        c.appendChild(pip);
+      }
+    }
+    function updateLeadBadge(myQ, oppQ) {
+      const el = document.getElementById('leadBadge');
+      if (myQ > oppQ) el.textContent = '🟢 You\'re ahead';
+      else if (myQ < oppQ) el.textContent = '🔴 Opponent ahead';
+      else el.textContent = '🟡 Tied';
+    }
+
+    let MP = { roomCode: null, role: null, myName: '', oppName: '', listeners: [], selectedTopicId: null };
+
+    function mpShowPane(id) {
+      document.querySelectorAll('.mp-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function openMultiplayer() {
+      MP.myName = window._currentUser
+        ? (window._currentUser.displayName || window._currentUser.email.split('@')[0])
+        : 'Player';
+      document.getElementById('mpOverlay').classList.add('open');
+      mpShowPane('mpLobby');
+      document.getElementById('mpLobbyStatus').textContent = '';
+      const g = document.getElementById('mpTopicGrid'); g.innerHTML = '';
+      T.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = 'topic-select-btn'; btn.textContent = t.label; btn.dataset.id = t.id;
+        btn.onclick = () => {
+          document.querySelectorAll('.topic-select-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected'); MP.selectedTopicId = t.id;
+          document.getElementById('mpStartRaceBtn').disabled = false;
+        };
+        g.appendChild(btn);
+      });
+    }
+    function closeMultiplayer() { document.getElementById('mpOverlay').classList.remove('open'); mpCancelRoom(); }
+    function mpOverlayClick(e) { if (e.target === document.getElementById('mpOverlay')) closeMultiplayer(); }
+    function mpStatus(paneId, msg, cls = '') {
+      const el = document.getElementById(paneId);
+      if (el) { el.textContent = msg; el.className = 'mp-status' + (cls ? ' ' + cls : ''); }
+    }
+    async function mpCreate() {
+      if (!window._firebaseReady) { mpStatus('mpLobbyStatus', 'Firebase not configured.', 'error'); return; }
+      MP.role = 'host'; MP.roomCode = randCode();
+      mpShowPane('mpPickTopic');
+      document.getElementById('mpPickStatus').textContent = `Room: ${MP.roomCode}`;
+    }
+    async function mpStartRace() {
+      if (!MP.selectedTopicId) { mpStatus('mpPickStatus', 'Pick a topic first.', 'error'); return; }
+      const topic = T.find(t => t.id === MP.selectedTopicId); curTopic = topic;
+      const qs = Array.from({ length: DRILL_N }, () => topic.gen());
+      const roomRef = window._ref(window._db, `rooms/${MP.roomCode}`);
+      await window._set(roomRef, {
+        host: { name: MP.myName, progress: 0, done: false, timeMs: 0 },
+        guest: null, topicId: topic.id, topicLabel: topic.label,
+        questions: qs.map(q => ({ q: q.q, a: q.a })),
+        state: 'waiting', createdAt: Date.now(),
+      });
+      document.getElementById('mpCodeDisplay').textContent = MP.roomCode;
+      mpStatus('mpWaitStatus', 'Waiting for opponent…');
+      mpShowPane('mpWaitPane');
+      const unsub = window._onValue(roomRef, snap => {
+        const data = snap.val(); if (!data) return;
+        if (data.guest && data.state === 'waiting') {
+          MP.oppName = data.guest.name;
+          mpStatus('mpWaitStatus', `${MP.oppName} joined! Starting…`, 'ok');
+          window._update(roomRef, { state: 'racing' });
+          setTimeout(() => {
+            closeMultiplayer();
+            document.getElementById('modal').classList.add('open');
+            document.getElementById('modalTitle').textContent = `⚔️ Race: ${topic.label}`;
+            document.getElementById('oppName').textContent = MP.oppName;
+            mpListenOpponent(MP.roomCode, 'guest');
+            beginDrill(true, qs);
+          }, 800);
+        }
+      });
+      MP.listeners.push(unsub);
+    }
+    async function mpJoin() {
+      if (!window._firebaseReady) { mpStatus('mpLobbyStatus', 'Firebase not configured.', 'error'); return; }
+      const code = document.getElementById('mpJoinCode').value.trim().toUpperCase();
+      if (code.length < 4) { mpStatus('mpLobbyStatus', 'Enter a room code.', 'error'); return; }
+      MP.role = 'guest'; MP.roomCode = code;
+      mpStatus('mpLobbyStatus', 'Joining…');
+      const roomRef = window._ref(window._db, `rooms/${code}`);
+      const snap = await window._get(roomRef);
+      if (!snap.exists()) { mpStatus('mpLobbyStatus', 'Room not found.', 'error'); return; }
+      const data = snap.val();
+      if (data.state !== 'waiting') { mpStatus('mpLobbyStatus', 'Room already started.', 'error'); return; }
+      if (data.guest) { mpStatus('mpLobbyStatus', 'Room is full.', 'error'); return; }
+      MP.oppName = data.host.name;
+      const topic = T.find(t => t.id === data.topicId); curTopic = topic;
+      const qs = data.questions;
+      await window._update(window._ref(window._db, `rooms/${code}`), {
+        guest: { name: MP.myName, progress: 0, done: false, timeMs: 0 },
+      });
+      closeMultiplayer();
+      document.getElementById('modal').classList.add('open');
+      document.getElementById('modalTitle').textContent = `⚔️ Race: ${topic.label}`;
+      document.getElementById('oppName').textContent = MP.oppName;
+      mpListenOpponent(code, 'host');
+      beginDrill(true, qs);
+    }
+    function mpCancelRoom() {
+      if (MP.roomCode && MP.role === 'host' && window._firebaseReady)
+        window._remove(window._ref(window._db, `rooms/${MP.roomCode}`)).catch(() => { });
+      mpCleanupListeners(); MP.roomCode = null; MP.role = null;
+    }
+    function mpPushProgress(qi) {
+      if (!MP.roomCode || !window._firebaseReady) return;
+      window._update(window._ref(window._db, `rooms/${MP.roomCode}/${MP.role}`), { progress: qi }).catch(() => { });
+    }
+    function mpPushFinish(totalMs) {
+      if (!MP.roomCode || !window._firebaseReady) return;
+      window._update(window._ref(window._db, `rooms/${MP.roomCode}/${MP.role}`), {
+        progress: DRILL_N, done: true, timeMs: Math.round(totalMs),
+      }).catch(() => { });
+    }
+    function mpListenOpponent(code, oppKey) {
+      const oppRef = window._ref(window._db, `rooms/${code}/${oppKey}`);
+      const unsub = window._onValue(oppRef, snap => {
+        const data = snap.val(); if (!data) return;
+        const oppQ = data.progress || 0, myQ = D.i || 0;
+        renderOppPips(oppQ); updateLeadBadge(myQ, oppQ);
+        if (data.done && !D._shownResult) {
+          if (D.totalMs > 0) determineWinner(D.totalMs, data.timeMs, MP.oppName);
+          else document.getElementById('leadBadge').textContent = '🔴 Opponent finished!';
+        }
+      });
+      MP.listeners.push(unsub);
+    }
+    function determineWinner(myMs, oppMs, oppName) {
+      if (D._shownResult) return; D._shownResult = true;
+      const my = (myMs / 1000).toFixed(2), opp = (oppMs / 1000).toFixed(2);
+      let b;
+      if (myMs < oppMs) b = `🏆 You win! ${my}s vs ${opp}s`;
+      else if (oppMs < myMs) b = `😔 ${oppName} wins. ${opp}s vs ${my}s`;
+      else b = `🤝 Tie! Both ${my}s`;
+      showResults(b);
+    }
+    function mpCleanupListeners() {
+      MP.listeners.forEach(fn => { try { fn(); } catch (e) { } });
+      MP.listeners = [];
+    }
+  </script>
+</body>
+
+</html>
