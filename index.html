@@ -4,18 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TMSCA Number Sense Practice</title>
+  <title>TMSCA Practice</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
     rel="stylesheet">
-
-  <!-- Vercel Web Analytics -->
-  <script>
-    window.va = window.va || function () { 
-      (window.vaq = window.vaq || []).push(arguments); 
-    };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -166,7 +158,6 @@
       margin-top: 2px;
     }
 
-    /* tabs */
     .auth-tabs {
       display: flex;
       background: #f5f0e8;
@@ -425,7 +416,6 @@
       background: rgba(255, 255, 255, 0.32);
     }
 
-    /* NAV */
     .nav {
       display: flex;
       gap: 8px;
@@ -469,7 +459,6 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* GRID */
     .grid-wrap {
       padding: 4px 14px 40px;
       display: grid;
@@ -729,7 +718,7 @@
     }
 
     .drill-question-text {
-      font-size: clamp(28px, 7vw, 40px);
+      font-size: clamp(20px, 6vw, 34px);
       font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
       color: #fff;
@@ -1240,8 +1229,8 @@
     <div class="auth-card">
       <div class="auth-logo">
         <div class="auth-logo-icon">🧮</div>
-        <div class="auth-logo-title">TMSCA Number Sense Practice</div>
-        <div class="auth-logo-sub">Practice for TMSCA Number Sense</div>
+        <div class="auth-logo-title">TMSCA Practice</div>
+        <div class="auth-logo-sub">Practice for TMSCA </div>
       </div>
 
       <div class="auth-tabs">
@@ -1323,7 +1312,7 @@
   <div id="appShell">
 
     <div class="header">
-      <div class="header-logo">TMSCA Number Sense Practice</div>
+      <div class="header-logo">TMSCA Practice</div>
       <div class="header-right">
         <button class="header-btn" onclick="openMultiplayer()">🎮 Multiplayer</button>
         <div class="header-user" onclick="signOutUser()" title="Sign out" style="cursor:pointer">
@@ -1335,7 +1324,8 @@
 
     <div class="nav">
       <button class="nav-tab active" onclick="setTab('random',this)">🔀 Random</button>
-      <button class="nav-tab" onclick="setTab('all',this)">📋 All Topics</button>
+      <button class="nav-tab" onclick="setTab('all',this)">📋 All Number Sense Topics</button>
+      <button class="nav-tab" onclick="setTab('science',this)">🧪 Science</button>
     </div>
     <div class="banner">Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.</div>
     <div class="grid-wrap" id="topicGrid"></div>
@@ -1374,8 +1364,7 @@
             </div>
             <div class="drill-question-text" id="dQuestion"></div>
             <div class="drill-input-row">
-              <input class="drill-input" id="dInput" type="number" placeholder="?" autocomplete="off"
-                inputmode="numeric">
+              <input class="drill-input" id="dInput" type="text" placeholder="?" autocomplete="off">
               <button class="drill-submit" onclick="submitAnswer()">→</button>
             </div>
             <div class="waiting-screen" id="waitingScreen">
@@ -1437,7 +1426,7 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      TMSCA Number Sense Practice • Made for for the Ereckson Middle School Number Sense Team by Simon Wei
+      TMSCA Practice for Ereckson Middle School
     </div>
   </footer>
 
@@ -1604,6 +1593,411 @@
       { id: 'mean', label: 'Mean / Median', rule: 'Mean = sum/count. Median = middle after sorting.', ex: ['Mean{2,4,6} = 4'], gen() { const c = ri(3, 6); const v = Array.from({ length: c }, () => ri(1, 30)).sort((a, b) => a - b); const type = Math.random() < .5 ? 'mean' : 'median'; let ans; if (type === 'mean') ans = Math.round(v.reduce((s, x) => s + x, 0) / c * 10) / 10; else { const m = Math.floor(c / 2); ans = c % 2 ? v[m] : (v[m - 1] + v[m]) / 2; } return { q: `${type[0].toUpperCase() + type.slice(1)}{${v.join(',')}}`, a: ans }; } },
     ];
 
+    const SCIENCE = {
+      biology: [
+        {type:"typed",q:"Basic unit of life",a:"cell"},
+        {type:"typed",q:"Control center of cell",a:"nucleus"},
+        {type:"typed",q:"Organelle that produces ATP",a:"mitochondria"},
+        {type:"typed",q:"Organelle for photosynthesis",a:"chloroplast"},
+        {type:"typed",q:"Site of protein synthesis",a:"ribosome"},
+        {type:"typed",q:"Cell boundary",a:"cell membrane"},
+        {type:"typed",q:"Fluid inside cell",a:"cytoplasm"},
+        {type:"typed",q:"Storage organelle",a:"vacuole"},
+        {type:"typed",q:"Organelle that packages proteins",a:"golgi apparatus"},
+        {type:"typed",q:"Transport network organelle",a:"endoplasmic reticulum"},
+        {type:"typed",q:"Cells without nucleus",a:"prokaryotic"},
+        {type:"typed",q:"Cells with nucleus",a:"eukaryotic"},
+        {type:"typed",q:"Single celled organism",a:"unicellular"},
+        {type:"typed",q:"Many celled organism",a:"multicellular"},
+        {type:"typed",q:"Study of life",a:"biology"},
+        {type:"typed",q:"Study of cells",a:"cytology"},
+        {type:"typed",q:"Study of genes",a:"genetics"},
+        {type:"typed",q:"Process plants use sunlight",a:"photosynthesis"},
+        {type:"typed",q:"Gas plants take in",a:"carbon dioxide"},
+        {type:"typed",q:"Gas plants release",a:"oxygen"},
+        {type:"typed",q:"Movement of water across membrane",a:"osmosis"},
+        {type:"typed",q:"Movement high to low concentration",a:"diffusion"},
+        {type:"typed",q:"Energy requiring transport",a:"active transport"},
+        {type:"typed",q:"Levels of organization smallest",a:"cell"},
+        {type:"typed",q:"Cells working together",a:"tissue"},
+        {type:"typed",q:"Tissues working together",a:"organ"},
+        {type:"typed",q:"Organs working together",a:"organ system"},
+        {type:"typed",q:"All organ systems",a:"organism"},
+        {type:"typed",q:"Group same species",a:"population"},
+        {type:"typed",q:"Multiple populations",a:"community"},
+        {type:"typed",q:"Living and nonliving system",a:"ecosystem"},
+        {type:"typed",q:"Global ecosystem",a:"biosphere"},
+        {type:"typed",q:"Organism that makes food",a:"producer"},
+        {type:"typed",q:"Organism that eats producers",a:"herbivore"},
+        {type:"typed",q:"Organism that eats meat",a:"carnivore"},
+        {type:"typed",q:"Organism that eats both",a:"omnivore"},
+        {type:"typed",q:"Breaks down dead matter",a:"decomposer"},
+        {type:"typed",q:"Diagram of feeding relationships",a:"food web"},
+        {type:"typed",q:"Energy flow diagram",a:"food chain"},
+        {type:"typed",q:"Energy level diagram",a:"energy pyramid"},
+        {type:"typed",q:"Genetic material",a:"DNA"},
+        {type:"typed",q:"DNA shape",a:"double helix"},
+        {type:"typed",q:"DNA building blocks",a:"nucleotides"},
+        {type:"typed",q:"DNA to RNA",a:"transcription"},
+        {type:"typed",q:"RNA to protein",a:"translation"},
+        {type:"typed",q:"3 base code",a:"codon"},
+        {type:"typed",q:"Dominant gene symbol",a:"capital letter"},
+        {type:"typed",q:"Recessive gene symbol",a:"lowercase letter"},
+        {type:"typed",q:"Passing traits",a:"inheritance"},
+        {type:"typed",q:"Physical expression of gene",a:"phenotype"},
+        {type:"typed",q:"Gene combination",a:"genotype"},
+        {type:"typed",q:"Scientist of genetics",a:"mendel"},
+        {type:"typed",q:"Pea plant scientist",a:"mendel"},
+        {type:"typed",q:"Animal kingdom",a:"animalia"},
+        {type:"typed",q:"Plant kingdom",a:"plantae"},
+        {type:"typed",q:"Fungi kingdom",a:"fungi"},
+        {type:"typed",q:"Bacteria kingdom",a:"bacteria"},
+        {type:"typed",q:"Phylum sponges",a:"porifera"},
+        {type:"typed",q:"Phylum jellyfish",a:"cnidaria"},
+        {type:"typed",q:"Phylum worms",a:"annelida"},
+        {type:"typed",q:"Phylum insects",a:"arthropoda"},
+        {type:"typed",q:"Phylum vertebrates",a:"chordata"},
+        {type:"typed",q:"Body temperature constant animals",a:"endotherm"},
+        {type:"typed",q:"Body temperature changes animals",a:"ectotherm"},
+        {type:"typed",q:"Animal backbone group",a:"vertebrate"},
+        {type:"typed",q:"Animal without backbone",a:"invertebrate"},
+        {type:"typed",q:"Fish breathe with",a:"gills"},
+        {type:"typed",q:"Mammals feed young with",a:"milk"},
+        {type:"typed",q:"Bird body covering",a:"feathers"},
+        {type:"typed",q:"Reptile body covering",a:"scales"},
+        {type:"typed",q:"Study of microscopic life",a:"microbiology"},
+        {type:"typed",q:"Bacteria cell type",a:"prokaryotic"},
+        {type:"typed",q:"Bacteria reproduction method",a:"binary fission"},
+        {type:"typed",q:"Virus genetic material",a:"DNA RNA"},
+        {type:"typed",q:"Virus reproduction requires",a:"host cell"},
+        {type:"typed",q:"Plant tissue transport water",a:"xylem"},
+        {type:"typed",q:"Plant tissue transport sugar",a:"phloem"},
+        {type:"typed",q:"Leaf openings",a:"stomata"},
+        {type:"typed",q:"Green pigment plants",a:"chlorophyll"},
+        {type:"typed",q:"Plant reproduction structure",a:"flower"},
+        {type:"typed",q:"Change species over time",a:"evolution"},
+        {type:"typed",q:"Best adapted survive",a:"natural selection"},
+        {type:"typed",q:"Inherited survival traits",a:"adaptation"},
+        {type:"typed",q:"Common ancestor evidence",a:"fossils"},
+        {type:"typed",q:"Darwin finch feature",a:"beak variation"},
+        {type:"typed",q:"Blood pump organ",a:"heart"},
+        {type:"typed",q:"Gas exchange organ",a:"lungs"},
+        {type:"typed",q:"Control organ body",a:"brain"},
+        {type:"typed",q:"Digestion begins organ",a:"mouth"},
+        {type:"typed",q:"Nutrient absorption organ",a:"small intestine"},
+        {type:"typed",q:"Disease causing agent",a:"pathogen"},
+        {type:"typed",q:"Body defense protein",a:"antibody"},
+        {type:"typed",q:"Killed weakened pathogen injection",a:"vaccine"},
+        {type:"typed",q:"White blood cells role",a:"fight infection"},
+        {type:"typed",q:"Immune memory response",a:"immunity"},
+        {type:"typed",q:"Gene different forms",a:"alleles"},
+        {type:"typed",q:"Allele expressed trait",a:"dominant"},
+        {type:"typed",q:"Allele hidden trait",a:"recessive"},
+        {type:"typed",q:"Genetic makeup organism",a:"genotype"},
+        {type:"typed",q:"Physical expression genes",a:"phenotype"},
+        {type:"typed",q:"DNA base pairs A with",a:"thymine"},
+        {type:"typed",q:"DNA base pairs C with",a:"guanine"},
+        {type:"typed",q:"RNA contains sugar",a:"ribose"},
+        {type:"typed",q:"Organisms same species group",a:"population"},
+        {type:"typed",q:"Multiple populations area",a:"community"},
+        {type:"typed",q:"Living nonliving interactions",a:"ecosystem"},
+        {type:"typed",q:"Organism eats plants",a:"herbivore"},
+        {type:"typed",q:"Organism eats animals",a:"carnivore"},
+        {type:"typed",q:"Oxygen carried molecule",a:"hemoglobin"},
+        {type:"typed",q:"Bone connection joint",a:"ligament"},
+        {type:"typed",q:"Muscle to bone connection",a:"tendon"},
+        {type:"typed",q:"Brain protects skull fluid",a:"cerebrospinal"},
+        {type:"typed",q:"Body temperature regulation organ",a:"skin"},
+        {type:"typed",q:"Altering DNA technology",a:"genetic engineering"},
+        {type:"typed",q:"Copy DNA segments process",a:"cloning"},
+        {type:"typed",q:"DNA cut enzyme",a:"restriction enzyme"},
+        {type:"typed",q:"DNA insert carrier",a:"vector"},
+        {type:"typed",q:"Modified crop example",a:"gmo"},
+        {type:"typed",q:"Cell division body cells",a:"mitosis"},
+        {type:"typed",q:"Cell division sex cells",a:"meiosis"},
+        {type:"typed",q:"Cell suicide process",a:"apoptosis"},
+        {type:"typed",q:"Cell specialization process",a:"differentiation"},
+        {type:"typed",q:"Stem cell property",a:"unspecialized"},
+        {type:"typed",q:"Largest organ body",a:"skin"},
+        {type:"typed",q:"Bone protecting brain",a:"cranium"},
+        {type:"typed",q:"Organ filtering blood",a:"kidney"},
+        {type:"typed",q:"Organ producing insulin",a:"pancreas"},
+        {type:"typed",q:"Organ storing bile",a:"gallbladder"}
+      ],
+      chemistry: [
+        {type:"typed",q:"Smallest unit element",a:"atom"},
+        {type:"typed",q:"Atom center",a:"nucleus"},
+        {type:"typed",q:"Negative particle",a:"electron"},
+        {type:"typed",q:"Positive particle",a:"proton"},
+        {type:"typed",q:"Neutral particle",a:"neutron"},
+        {type:"typed",q:"Atomic number equals",a:"protons"},
+        {type:"typed",q:"Atomic mass equals",a:"protons neutrons"},
+        {type:"typed",q:"Row periodic table",a:"period"},
+        {type:"typed",q:"Column periodic table",a:"group"},
+        {type:"typed",q:"Group 1 name",a:"alkali metals"},
+        {type:"typed",q:"Group 2 name",a:"alkaline earth metals"},
+        {type:"typed",q:"Group 17 name",a:"halogens"},
+        {type:"typed",q:"Group 18 name",a:"noble gases"},
+        {type:"typed",q:"Shiny conductive elements",a:"metals"},
+        {type:"typed",q:"Dull brittle elements",a:"nonmetals"},
+        {type:"typed",q:"Between metals nonmetals",a:"metalloids"},
+        {type:"typed",q:"Electron transfer bond",a:"ionic"},
+        {type:"typed",q:"Electron sharing bond",a:"covalent"},
+        {type:"typed",q:"Metal atom bond",a:"metallic"},
+        {type:"typed",q:"Substance pH below 7",a:"acid"},
+        {type:"typed",q:"Substance pH above 7",a:"base"},
+        {type:"typed",q:"pH equal 7",a:"neutral"},
+        {type:"typed",q:"Water chemical formula",a:"H2O"},
+        {type:"typed",q:"Carbon dioxide formula",a:"CO2"},
+        {type:"typed",q:"Glucose formula",a:"C6H12O6"},
+        {type:"typed",q:"Matter state solid shape",a:"definite"},
+        {type:"typed",q:"Matter state gas shape",a:"indefinite"},
+        {type:"typed",q:"Change solid to liquid",a:"melting"},
+        {type:"typed",q:"Change liquid to solid",a:"freezing"},
+        {type:"typed",q:"Change liquid gas",a:"evaporation"},
+        {type:"typed",q:"Change gas liquid",a:"condensation"},
+        {type:"typed",q:"Solid gas change",a:"sublimation"},
+        {type:"typed",q:"Substances reactants form",a:"products"},
+        {type:"typed",q:"Reaction releases heat",a:"exothermic"},
+        {type:"typed",q:"Reaction absorbs heat",a:"endothermic"},
+        {type:"typed",q:"Catalyst function",a:"increase rate"},
+        {type:"typed",q:"Conservation mass law",a:"mass constant"},
+        {type:"typed",q:"Substance dissolved",a:"solute"},
+        {type:"typed",q:"Substance dissolving",a:"solvent"},
+        {type:"typed",q:"Uniform mixture",a:"solution"},
+        {type:"typed",q:"Maximum dissolved amount",a:"saturated"},
+        {type:"typed",q:"Less than max dissolved",a:"unsaturated"},
+        {type:"typed",q:"Gas pressure cause",a:"particle collisions"},
+        {type:"typed",q:"Temperature particle motion",a:"kinetic energy"},
+        {type:"typed",q:"Gas volume increase temperature",a:"charles law"},
+        {type:"typed",q:"Gas pressure volume relation",a:"boyles law"},
+        {type:"typed",q:"Gas formula constant relation",a:"ideal gas law"},
+        {type:"typed",q:"Electron negative charge",a:"negative"},
+        {type:"typed",q:"Proton positive charge",a:"positive"},
+        {type:"typed",q:"Neutron charge",a:"neutral"},
+        {type:"typed",q:"Electron orbit region",a:"electron cloud"},
+        {type:"typed",q:"Increase atomic number left right",a:"increase"},
+        {type:"typed",q:"Increase atomic size down group",a:"increase"},
+        {type:"typed",q:"Most reactive metals group",a:"alkali metals"},
+        {type:"typed",q:"Least reactive group",a:"noble gases"},
+        {type:"typed",q:"Shared electrons bond",a:"covalent"},
+        {type:"typed",q:"Transferred electrons bond",a:"ionic"},
+        {type:"typed",q:"Sea electrons bond",a:"metallic"},
+        {type:"typed",q:"Weak intermolecular force",a:"van der waals"},
+        {type:"typed",q:"Hydrogen bond example",a:"water"},
+        {type:"typed",q:"Carbon hydrogen compounds",a:"organic"},
+        {type:"typed",q:"Simplest organic compound",a:"methane"},
+        {type:"typed",q:"Alcohol functional group",a:"hydroxyl"},
+        {type:"typed",q:"Carboxylic acid group",a:"carboxyl"},
+        {type:"typed",q:"Polymer building blocks",a:"monomers"},
+        {type:"typed",q:"Amount substance unit",a:"mole"},
+        {type:"typed",q:"Avogadro number approximate",a:"6.02e23"},
+        {type:"typed",q:"Mass per mole",a:"molar mass"},
+        {type:"typed",q:"Solution concentration measure",a:"molarity"},
+        {type:"typed",q:"Reaction quantity math",a:"stoichiometry"}
+      ],
+      physics: [
+        {type:"typed",q:"Push or pull",a:"force"},
+        {type:"typed",q:"Measure inertia",a:"mass"},
+        {type:"typed",q:"Speed direction motion",a:"velocity"},
+        {type:"typed",q:"Velocity change rate",a:"acceleration"},
+        {type:"typed",q:"Energy motion",a:"kinetic energy"},
+        {type:"typed",q:"Stored energy",a:"potential energy"},
+        {type:"typed",q:"Energy cannot be created destroyed",a:"conservation of energy"},
+        {type:"typed",q:"Unit force",a:"newton"},
+        {type:"typed",q:"Unit energy",a:"joule"},
+        {type:"typed",q:"Work formula quantity",a:"force distance"},
+        {type:"typed",q:"Power equals",a:"work time"},
+        {type:"typed",q:"Wave peak",a:"crest"},
+        {type:"typed",q:"Wave valley",a:"trough"},
+        {type:"typed",q:"Wave distance crest crest",a:"wavelength"},
+        {type:"typed",q:"Wave cycles per second",a:"frequency"},
+        {type:"typed",q:"Parallel wave motion",a:"longitudinal"},
+        {type:"typed",q:"Perpendicular wave motion",a:"transverse"},
+        {type:"typed",q:"Light bouncing surface",a:"reflection"},
+        {type:"typed",q:"Light bending medium",a:"refraction"},
+        {type:"typed",q:"Simple machine ramp",a:"inclined plane"},
+        {type:"typed",q:"Simple machine wheel groove",a:"pulley"},
+        {type:"typed",q:"Simple machine bar pivot",a:"lever"},
+        {type:"typed",q:"Flow electric charge",a:"current"},
+        {type:"typed",q:"Opposition current",a:"resistance"},
+        {type:"typed",q:"Energy per charge",a:"voltage"},
+        {type:"typed",q:"Material conducts well",a:"conductor"},
+        {type:"typed",q:"Material resists current",a:"insulator"},
+        {type:"typed",q:"Magnet ends",a:"poles"},
+        {type:"typed",q:"Like poles behavior",a:"repel"},
+        {type:"typed",q:"Opposite poles behavior",a:"attract"},
+        {type:"typed",q:"Magnetic field shape",a:"lines"},
+        {type:"typed",q:"Moving charge creates",a:"magnetic field"},
+        {type:"typed",q:"Stored elastic energy",a:"elastic potential"},
+        {type:"typed",q:"Energy motion waves",a:"mechanical energy"},
+        {type:"typed",q:"Energy from sun",a:"solar"},
+        {type:"typed",q:"Energy moving air",a:"wind"},
+        {type:"typed",q:"Energy moving water",a:"hydroelectric"},
+        {type:"typed",q:"Wave energy amplitude relation",a:"direct"},
+        {type:"typed",q:"Convex lens image type",a:"real"},
+        {type:"typed",q:"Concave mirror image type",a:"virtual"},
+        {type:"typed",q:"White light separation",a:"spectrum"},
+        {type:"typed",q:"Energy packet light",a:"photon"},
+        {type:"typed",q:"Einstein equation symbol",a:"c"},
+        {type:"typed",q:"Energy mass relation",a:"equivalence"},
+        {type:"typed",q:"Uncertainty principle scientist",a:"heisenberg"},
+        {type:"typed",q:"Quantum energy levels",a:"discrete"},
+        {type:"typed",q:"Energy transfer heat",a:"heat"},
+        {type:"typed",q:"Disorder measure",a:"entropy"},
+        {type:"typed",q:"Energy unavailable work",a:"waste heat"},
+        {type:"typed",q:"Heat engine efficiency limit",a:"carnot"},
+        {type:"typed",q:"Absolute zero value kelvin",a:"0"},
+        {type:"typed",q:"Speed light constant",a:"c"},
+        {type:"typed",q:"Time dilation effect",a:"slower"},
+        {type:"typed",q:"Length contraction effect",a:"shorter"},
+        {type:"typed",q:"Gravity spacetime curvature",a:"relativity"},
+        {type:"typed",q:"Mass increases energy speed",a:"relativistic"}
+      ],
+      earth: [
+        {type:"typed",q:"Outer Earth layer",a:"crust"},
+        {type:"typed",q:"Thickest Earth layer",a:"mantle"},
+        {type:"typed",q:"Liquid metal layer",a:"outer core"},
+        {type:"typed",q:"Solid metal center",a:"inner core"},
+        {type:"typed",q:"Earth plates movement",a:"plate tectonics"},
+        {type:"typed",q:"Break crust line",a:"fault"},
+        {type:"typed",q:"Rock cooled lava",a:"igneous"},
+        {type:"typed",q:"Rock heat pressure",a:"metamorphic"},
+        {type:"typed",q:"Rock sediments",a:"sedimentary"},
+        {type:"typed",q:"Weather layer atmosphere",a:"troposphere"},
+        {type:"typed",q:"Ozone layer location",a:"stratosphere"},
+        {type:"typed",q:"Air pressure measure tool",a:"barometer"},
+        {type:"typed",q:"Wind speed measure tool",a:"anemometer"},
+        {type:"typed",q:"Water cycle evaporation step",a:"evaporation"},
+        {type:"typed",q:"Water cycle cloud formation",a:"condensation"},
+        {type:"typed",q:"Water falling from clouds",a:"precipitation"},
+        {type:"typed",q:"Long term weather",a:"climate"},
+        {type:"typed",q:"Greenhouse gas example",a:"carbon dioxide"},
+        {type:"typed",q:"Gas traps heat atmosphere",a:"greenhouse effect"},
+        {type:"typed",q:"Earth tilt effect seasons",a:"axis tilt"},
+        {type:"typed",q:"Ocean movement heat transfer",a:"currents"},
+        {type:"typed",q:"Sudden ground movement",a:"earthquake"},
+        {type:"typed",q:"Magma eruption surface",a:"volcano"},
+        {type:"typed",q:"Ocean wave earthquake cause",a:"tsunami"},
+        {type:"typed",q:"Rapid snow movement",a:"avalanche"},
+        {type:"typed",q:"Strong rotating storm",a:"tornado"},
+        {type:"typed",q:"Species disappearance forever",a:"extinction"},
+        {type:"typed",q:"Variety life biodiversity",a:"biodiversity"},
+        {type:"typed",q:"Human impact environment",a:"pollution"},
+        {type:"typed",q:"Resource reused process",a:"recycling"},
+        {type:"typed",q:"Energy sustainable source",a:"renewable"},
+        {type:"typed",q:"Largest ocean earth",a:"pacific"},
+        {type:"typed",q:"Ocean salt concentration",a:"salinity"},
+        {type:"typed",q:"Ocean depth zone dark",a:"abyssal"},
+        {type:"typed",q:"Ocean life floating",a:"plankton"},
+        {type:"typed",q:"Ocean floor spreading cause",a:"plates"}
+      ],
+      space: [
+        {type:"typed",q:"Closest planet sun",a:"mercury"},
+        {type:"typed",q:"Hottest planet",a:"venus"},
+        {type:"typed",q:"Red planet",a:"mars"},
+        {type:"typed",q:"Largest planet",a:"jupiter"},
+        {type:"typed",q:"Ring planet",a:"saturn"},
+        {type:"typed",q:"Our galaxy",a:"milky way"},
+        {type:"typed",q:"Star energy process",a:"fusion"},
+        {type:"typed",q:"Moon fully visible",a:"full moon"},
+        {type:"typed",q:"Moon not visible",a:"new moon"},
+        {type:"typed",q:"Group stars system",a:"galaxy"},
+        {type:"typed",q:"Large group galaxies",a:"cluster"},
+        {type:"typed",q:"Star explosion",a:"supernova"},
+        {type:"typed",q:"Extremely dense object",a:"black hole"},
+        {type:"typed",q:"Star birth cloud",a:"nebula"},
+        {type:"typed",q:"Gas giant example",a:"jupiter"},
+        {type:"typed",q:"Ice giant example",a:"neptune"},
+        {type:"typed",q:"Rocky planet example",a:"earth"},
+        {type:"typed",q:"Planet path around sun",a:"orbit"},
+        {type:"typed",q:"Time orbit sun",a:"year"},
+        {type:"typed",q:"Universe origin theory",a:"big bang"},
+        {type:"typed",q:"Universe expansion observation",a:"redshift"},
+        {type:"typed",q:"Background radiation universe",a:"microwave background"},
+        {type:"typed",q:"Dark matter property",a:"invisible"},
+        {type:"typed",q:"Dark energy effect",a:"expansion"},
+        {type:"typed",q:"Satellite orbit earth use",a:"communication"},
+        {type:"typed",q:"Rocket propulsion principle",a:"newton third law"},
+        {type:"typed",q:"Space telescope example",a:"hubble"},
+        {type:"typed",q:"Mars rover purpose",a:"exploration"},
+        {type:"typed",q:"GPS uses satellites for",a:"location"},
+        {type:"typed",q:"Star lifecycle final stage small",a:"white dwarf"},
+        {type:"typed",q:"Star brightness measure",a:"luminosity"},
+        {type:"typed",q:"Distance star measure",a:"light year"},
+        {type:"typed",q:"Planet habitability factor",a:"liquid water"},
+        {type:"typed",q:"First human moon mission",a:"apollo 11"},
+        {type:"typed",q:"First satellite earth orbit",a:"sputnik"},
+        {type:"typed",q:"Mars helicopter name",a:"ingenuity"},
+        {type:"typed",q:"ISS purpose",a:"research"},
+        {type:"typed",q:"Voyager mission type",a:"probe"}
+      ],
+      scientists: [
+        {type:"typed",q:"Theory relativity scientist",a:"einstein"},
+        {type:"typed",q:"Gravity scientist",a:"newton"},
+        {type:"typed",q:"Radioactivity scientist",a:"curie"},
+        {type:"typed",q:"Evolution scientist",a:"darwin"},
+        {type:"typed",q:"Heliocentric scientist",a:"copernicus"},
+        {type:"typed",q:"Electricity experiments scientist",a:"franklin"},
+        {type:"typed",q:"Periodic table creator",a:"mendeleev"},
+        {type:"typed",q:"Radio inventor",a:"tesla"},
+        {type:"typed",q:"Planet motion laws scientist",a:"kepler"},
+        {type:"typed",q:"Genetics founder scientist",a:"mendel"},
+        {type:"typed",q:"Electric motor inventor",a:"faraday"},
+        {type:"typed",q:"DNA structure scientist",a:"watson crick"},
+        {type:"typed",q:"Quantum theory pioneer",a:"planck"},
+        {type:"typed",q:"Periodic table modern update",a:"mosley"}
+      ],
+      laws: [
+        {type:"typed",q:"F equals m times a law name",a:"newtons second law"},
+        {type:"typed",q:"Object stays motion law name",a:"newtons first law"},
+        {type:"typed",q:"Equal opposite forces law name",a:"newtons third law"},
+        {type:"typed",q:"Pressure volume inverse law",a:"boyles law"},
+        {type:"typed",q:"Volume temperature direct law",a:"charles law"},
+        {type:"typed",q:"Electric relation law name",a:"ohms law"},
+        {type:"typed",q:"Gravity force law name",a:"law universal gravitation"},
+        {type:"typed",q:"Mass conservation law name",a:"law conservation mass"},
+        {type:"typed",q:"Energy conserved law name",a:"law conservation energy"},
+        {type:"typed",q:"Wave speed formula law",a:"wave equation"},
+        {type:"typed",q:"Thermodynamics disorder law",a:"second law thermodynamics"},
+        {type:"typed",q:"Energy constant law",a:"first law thermodynamics"},
+        {type:"typed",q:"Mass energy equivalence law",a:"relativity"}
+      ],
+      vocab: [
+        {type:"typed",q:"Ability do work",a:"energy"},
+        {type:"typed",q:"Matter amount",a:"mass"},
+        {type:"typed",q:"Matter space taken",a:"volume"},
+        {type:"typed",q:"Measure heat energy",a:"temperature"},
+        {type:"typed",q:"Speed direction vector",a:"velocity"},
+        {type:"typed",q:"Force area measure",a:"pressure"},
+        {type:"typed",q:"Distance time ratio",a:"speed"},
+        {type:"typed",q:"Matter cannot created destroyed",a:"conservation"},
+        {type:"typed",q:"Force distance work",a:"work"},
+        {type:"typed",q:"Work time power",a:"power"},
+        {type:"typed",q:"Mass gravity weight",a:"weight"},
+        {type:"typed",q:"Rate velocity change",a:"acceleration"},
+        {type:"typed",q:"Energy motion object",a:"kinetic"},
+        {type:"typed",q:"Stored energy position",a:"potential"},
+        {type:"typed",q:"Matter smallest unit",a:"atom"}
+      ]
+    };
+
+    const ST = Object.keys(SCIENCE).map(k => {
+      const qs = SCIENCE[k];
+      return {
+        id: 'sci_' + k,
+        label: k.charAt(0).toUpperCase() + k.slice(1),
+        rule: `Science info about ${k}.`,
+        ex: [qs[0].q + ' = ' + qs[0].a],
+        gen() {
+          const item = qs[ri(0, qs.length - 1)];
+          return { q: item.q, a: item.a }; 
+        }
+      };
+    });
+
+    const ALL_TOPICS = [...T, ...ST];
+
     let curTopic = null;
     const DRILL_N = 5;
     let D = {};
@@ -1619,10 +2013,13 @@
         g.appendChild(el);
       });
     }
+
     function setTab(tab, btn) {
       document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      renderGrid(tab === 'random' ? [...T].sort(() => Math.random() - .5) : T);
+      if (tab === 'random') renderGrid([...T].sort(() => Math.random() - .5));
+      else if (tab === 'all') renderGrid(T);
+      else if (tab === 'science') renderGrid(ST); 
     }
 
     function showPane(id) {
@@ -1633,6 +2030,7 @@
       const el = document.getElementById(id);
       el.style.display = 'flex'; el.classList.add('active');
     }
+
     function openTopic(t) {
       curTopic = t;
       document.getElementById('modalTitle').textContent = t.label;
@@ -1644,10 +2042,12 @@
       showPane('paneInfo');
       document.getElementById('modal').classList.add('open');
     }
+
     function closeModal() {
       document.getElementById('modal').classList.remove('open');
       stopDrillTimer(); mpCleanupListeners();
     }
+
     function overlayClick(e) {
       if (e.target === document.getElementById('modal')) closeModal();
     }
@@ -1666,17 +2066,30 @@
       if (isMultiplayer) renderOppPips(0);
       showDrillQ();
     }
+
     function showDrillQ() {
       const q = D.qs[D.i];
       document.getElementById('dCounter').textContent = `${D.i + 1}/${DRILL_N}`;
       document.getElementById('dQuestion').textContent = q.q;
       const inp = document.getElementById('dInput');
-      inp.value = ''; inp.className = 'drill-input'; inp.focus();
+      inp.value = ''; 
+      inp.className = 'drill-input'; 
+      
+      if (typeof q.a === 'number') {
+        inp.type = 'number';
+        inp.inputMode = 'numeric';
+      } else {
+        inp.type = 'text';
+        inp.inputMode = 'text';
+      }
+      
+      inp.focus();
       inp.onkeydown = e => { if (e.key === 'Enter') submitAnswer(); };
       inp.oninput = () => checkLive();
       if (D.i === 0) { D.startMs = performance.now(); D.qStartMs = D.startMs; startDrillTimer(); }
       else { D.qStartMs = performance.now(); }
     }
+
     function startDrillTimer() {
       function tick() {
         const str = fmtTime(performance.now() - D.startMs);
@@ -1686,21 +2099,42 @@
       }
       D.raf = requestAnimationFrame(tick);
     }
+
     function stopDrillTimer() { if (D && D.raf) cancelAnimationFrame(D.raf); }
+
     function checkLive() {
-      const val = parseFloat(document.getElementById('dInput').value.trim());
-      if (isNaN(val)) return;
-      if (Math.abs(val - D.qs[D.i].a) < 0.01) submitAnswer();
+      const val = document.getElementById('dInput').value.trim();
+      if (val === '') return;
+      const q = D.qs[D.i];
+      
+      if (typeof q.a === 'number') {
+        const numVal = parseFloat(val);
+        if (isNaN(numVal)) return;
+        if (Math.abs(numVal - q.a) < 0.01) submitAnswer();
+      } else {
+        if (val.toLowerCase() === String(q.a).toLowerCase()) submitAnswer();
+      }
     }
+
     function submitAnswer() {
       const inp = document.getElementById('dInput');
-      const val = parseFloat(inp.value.trim());
-      if (isNaN(val)) return;
+      const val = inp.value.trim();
+      if (val === '') return;
       const now = performance.now();
       const q = D.qs[D.i];
-      const correct = Math.abs(val - q.a) < 0.01;
+      let correct = false;
+
+      if (typeof q.a === 'number') {
+        const numVal = parseFloat(val);
+        if (isNaN(numVal)) return; 
+        correct = Math.abs(numVal - q.a) < 0.01;
+      } else {
+        correct = val.toLowerCase() === String(q.a).toLowerCase();
+      }
+
       D.answers.push({ q: q.q, ans: q.a, userAns: val, correct, ms: now - D.qStartMs });
       inp.className = 'drill-input ' + (correct ? 'correct' : 'wrong');
+      
       if (correct) {
         D.i++;
         if (D.isMP) mpPushProgress(D.i);
@@ -1711,6 +2145,7 @@
         } else { showDrillQ(); }
       } else { inp.select(); }
     }
+
     function showResults(winnerText) {
       showPane('paneResults');
       const ts = fmtTime(D.totalMs);
@@ -1730,10 +2165,12 @@
       });
       document.getElementById('resAvg').innerHTML = `<strong>${(tot / D.answers.length).toFixed(2)}s</strong> per question`;
     }
+
     function restartAfterDrill() {
       if (D.isMP) { closeModal(); openMultiplayer(); }
       else { beginDrill(false); }
     }
+
     function renderOppPips(done) {
       const c = document.getElementById('oppPips'); c.innerHTML = '';
       for (let i = 0; i < DRILL_N; i++) {
@@ -1743,6 +2180,7 @@
         c.appendChild(pip);
       }
     }
+
     function updateLeadBadge(myQ, oppQ) {
       const el = document.getElementById('leadBadge');
       if (myQ > oppQ) el.textContent = '🟢 You\'re ahead';
@@ -1756,6 +2194,7 @@
       document.querySelectorAll('.mp-pane').forEach(p => p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
+
     function openMultiplayer() {
       MP.myName = window._currentUser
         ? (window._currentUser.displayName || window._currentUser.email.split('@')[0])
@@ -1764,7 +2203,7 @@
       mpShowPane('mpLobby');
       document.getElementById('mpLobbyStatus').textContent = '';
       const g = document.getElementById('mpTopicGrid'); g.innerHTML = '';
-      T.forEach(t => {
+      ALL_TOPICS.forEach(t => {
         const btn = document.createElement('button');
         btn.className = 'topic-select-btn'; btn.textContent = t.label; btn.dataset.id = t.id;
         btn.onclick = () => {
@@ -1775,21 +2214,25 @@
         g.appendChild(btn);
       });
     }
+
     function closeMultiplayer() { document.getElementById('mpOverlay').classList.remove('open'); mpCancelRoom(); }
     function mpOverlayClick(e) { if (e.target === document.getElementById('mpOverlay')) closeMultiplayer(); }
+    
     function mpStatus(paneId, msg, cls = '') {
       const el = document.getElementById(paneId);
       if (el) { el.textContent = msg; el.className = 'mp-status' + (cls ? ' ' + cls : ''); }
     }
+
     async function mpCreate() {
       if (!window._firebaseReady) { mpStatus('mpLobbyStatus', 'Firebase not configured.', 'error'); return; }
       MP.role = 'host'; MP.roomCode = randCode();
       mpShowPane('mpPickTopic');
       document.getElementById('mpPickStatus').textContent = `Room: ${MP.roomCode}`;
     }
+
     async function mpStartRace() {
       if (!MP.selectedTopicId) { mpStatus('mpPickStatus', 'Pick a topic first.', 'error'); return; }
-      const topic = T.find(t => t.id === MP.selectedTopicId); curTopic = topic;
+      const topic = ALL_TOPICS.find(t => t.id === MP.selectedTopicId); curTopic = topic;
       const qs = Array.from({ length: DRILL_N }, () => topic.gen());
       const roomRef = window._ref(window._db, `rooms/${MP.roomCode}`);
       await window._set(roomRef, {
@@ -1819,6 +2262,7 @@
       });
       MP.listeners.push(unsub);
     }
+
     async function mpJoin() {
       if (!window._firebaseReady) { mpStatus('mpLobbyStatus', 'Firebase not configured.', 'error'); return; }
       const code = document.getElementById('mpJoinCode').value.trim().toUpperCase();
@@ -1832,7 +2276,7 @@
       if (data.state !== 'waiting') { mpStatus('mpLobbyStatus', 'Room already started.', 'error'); return; }
       if (data.guest) { mpStatus('mpLobbyStatus', 'Room is full.', 'error'); return; }
       MP.oppName = data.host.name;
-      const topic = T.find(t => t.id === data.topicId); curTopic = topic;
+      const topic = ALL_TOPICS.find(t => t.id === data.topicId); curTopic = topic;
       const qs = data.questions;
       await window._update(window._ref(window._db, `rooms/${code}`), {
         guest: { name: MP.myName, progress: 0, done: false, timeMs: 0 },
@@ -1844,21 +2288,25 @@
       mpListenOpponent(code, 'host');
       beginDrill(true, qs);
     }
+
     function mpCancelRoom() {
       if (MP.roomCode && MP.role === 'host' && window._firebaseReady)
         window._remove(window._ref(window._db, `rooms/${MP.roomCode}`)).catch(() => { });
       mpCleanupListeners(); MP.roomCode = null; MP.role = null;
     }
+
     function mpPushProgress(qi) {
       if (!MP.roomCode || !window._firebaseReady) return;
       window._update(window._ref(window._db, `rooms/${MP.roomCode}/${MP.role}`), { progress: qi }).catch(() => { });
     }
+
     function mpPushFinish(totalMs) {
       if (!MP.roomCode || !window._firebaseReady) return;
       window._update(window._ref(window._db, `rooms/${MP.roomCode}/${MP.role}`), {
         progress: DRILL_N, done: true, timeMs: Math.round(totalMs),
       }).catch(() => { });
     }
+
     function mpListenOpponent(code, oppKey) {
       const oppRef = window._ref(window._db, `rooms/${code}/${oppKey}`);
       const unsub = window._onValue(oppRef, snap => {
@@ -1872,6 +2320,7 @@
       });
       MP.listeners.push(unsub);
     }
+
     function determineWinner(myMs, oppMs, oppName) {
       if (D._shownResult) return; D._shownResult = true;
       const my = (myMs / 1000).toFixed(2), opp = (oppMs / 1000).toFixed(2);
@@ -1881,6 +2330,7 @@
       else b = `🤝 Tie! Both ${my}s`;
       showResults(b);
     }
+
     function mpCleanupListeners() {
       MP.listeners.forEach(fn => { try { fn(); } catch (e) { } });
       MP.listeners = [];
