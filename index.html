@@ -597,89 +597,76 @@
         display: none !important;
       }
 
-      /* ── EVENT NAV ── */
-      .event-nav {
+      /* ── TOP NAV ── */
+      .top-nav {
         display: flex;
-        background: var(--white);
-        border-bottom: 2px solid var(--border);
-        overflow-x: auto;
-        padding: 0 16px;
-        gap: 0;
-      }
-
-      .event-nav::-webkit-scrollbar {
-        display: none;
-      }
-
-      .event-tab {
-        padding: 0 18px;
-        height: 46px;
-        border: none;
-        border-bottom: 3px solid transparent;
-        margin-bottom: -2px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.15s;
-        white-space: nowrap;
-        background: transparent;
-        color: var(--text3);
-        font-family: "Outfit", sans-serif;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .event-tab.active {
-        color: var(--amber-dark);
-        border-bottom-color: var(--amber);
-      }
-      .event-tab:not(.active):hover {
-        color: var(--text);
-        background: var(--amber-pale);
-      }
-
-      /* ── SUB NAV ── */
-      .sub-nav {
-        display: flex;
-        gap: 6px;
-        padding: 10px 16px;
+        gap: 8px;
+        padding: 14px 20px 0;
         background: var(--amber-bg);
-        border-bottom: 1px solid var(--border);
+        justify-content: center;
+        flex-wrap: wrap;
       }
 
       .nav-tab {
-        padding: 6px 16px;
-        border-radius: 999px;
-        border: 2px solid var(--border);
-        font-size: 12px;
+        padding: 9px 22px;
+        border-radius: 24px;
+        border: 2px solid transparent;
+        font-family: "Outfit", sans-serif;
+        font-size: 14px;
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.15s;
-        background: var(--white);
-        color: var(--amber-dark);
-        font-family: "Outfit", sans-serif;
+        transition: all 0.15s ease;
       }
 
       .nav-tab.active {
         background: var(--amber);
         color: #fff;
-        border-color: var(--amber);
-        box-shadow: 0 2px 10px rgba(200, 120, 0, 0.3);
+        box-shadow: 0 3px 12px rgba(200, 120, 0, 0.3);
+      }
+
+      .nav-tab:not(.active) {
+        background: var(--white);
+        color: var(--amber-dark);
+        border-color: var(--border);
       }
 
       .nav-tab:not(.active):hover {
         border-color: var(--amber);
       }
 
+      /* ── SEARCH BAR ── */
+      .section-search {
+        padding: 14px 14px 0;
+        background: var(--amber-bg);
+      }
+
+      .section-search input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        font-family: "Outfit", sans-serif;
+        font-size: 14px;
+        outline: none;
+        background: var(--white);
+        color: var(--text);
+        transition: border-color 0.15s;
+        box-sizing: border-box;
+      }
+
+      .section-search input:focus {
+        border-color: var(--amber);
+      }
+
       /* ── BANNER ── */
       .banner {
-        padding: 8px 20px;
+        padding: 8px;
         font-size: 11px;
         color: var(--text2);
         border-bottom: 1px solid var(--border);
         font-family: "JetBrains Mono", monospace;
         background: var(--amber-pale);
+        text-align: center;
       }
 
       .page {
@@ -690,11 +677,11 @@
       }
 
       /* ── GRID ── */
-      .grid-wrap {
-        padding: 16px 14px 80px;
+    .grid-wrap {
+        padding: 4px 14px 40px;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
       }
 
       .topic-tile {
@@ -2404,65 +2391,38 @@
         </div>
       </div>
 
-      <div class="event-nav">
-        <button
-          class="event-tab active"
-          onclick="switchEvent('numbersense', this)"
-        >
-          🧠 Number Sense
-        </button>
-        <button class="event-tab" onclick="switchEvent('calculator', this)">
-          🧮 Calculator
-        </button>
-        <button class="event-tab" onclick="switchEvent('generalmath', this)">
-          📐 General Math
-        </button>
-        <button class="event-tab" onclick="switchEvent('science', this)">
-          🔬 Science
-        </button>
+      <div class="top-nav">
+        <button class="nav-tab active" onclick="setTab('all', this)">📋 Number Sense</button>
+        <button class="nav-tab" onclick="setTab('genmath', this)">📐 General Math</button>
+        <button class="nav-tab" onclick="setTab('science', this)">🔬 Science</button>
       </div>
 
-      <div class="sub-nav" id="subNav">
-        <button class="nav-tab active" onclick="setTab('random', this)">
-          Shuffle
-        </button>
-        <button class="nav-tab" onclick="setTab('all', this)">All</button>
-      </div>
-      <div id="page-numbersense" class="page">
-        <div class="banner">
-          // select a topic card to open a timed 5-question drill
+      <div class="banner" id="mainBanner">Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.</div>
+
+      <!-- Number Sense section -->
+      <div id="nsSection">
+        <div class="section-search">
+          <input id="nsSearch" placeholder="🔍 Search number sense topics…" oninput="filterNS(this.value)">
         </div>
         <div class="grid-wrap" id="topicGrid"></div>
       </div>
-      <div id="page-calculator" class="page">
-        <div class="coming-soon">
-          <div class="coming-soon-title">Calculator</div>
-          <div class="coming-soon-sub">// coming soon</div>
-        </div>
-      </div>
-      <div id="page-generalmath" class="page">
+
+      <!-- General Math section -->
+      <div id="gmSection" style="display:none;">
         <div class="gm-header-bar">
-          <input
-            class="gm-search"
-            id="gmSearch"
-            placeholder="🔍 Search topics…"
-            oninput="filterGM(this.value)"
-          />
+          <input class="gm-search" id="gmSearch" placeholder="🔍 Search general math topics…" oninput="filterGM(this.value)">
           <div class="gm-category-row" id="gmCatRow"></div>
         </div>
-        <div class="gm-card-list" id="gmCardList"></div>
+        <div class="grid-wrap" id="gmTopicGrid"></div>
       </div>
-      <div id="page-science" class="page">
+
+      <!-- Science section -->
+      <div id="sciSection" style="display:none;">
         <div class="gm-header-bar">
-          <input
-            class="gm-search"
-            id="sciSearch"
-            placeholder="🔍 Search topics…"
-            oninput="filterSci(this.value)"
-          />
+          <input class="gm-search" id="sciSearch" placeholder="🔍 Search science topics…" oninput="filterSci(this.value)">
           <div class="gm-category-row" id="sciCatRow"></div>
         </div>
-        <div class="gm-card-list" id="sciCardList"></div>
+        <div class="grid-wrap" id="sciTopicGrid"></div>
       </div>
 
       <div class="modal-overlay" id="modal" onclick="overlayClick(event)">
@@ -2718,74 +2678,7 @@
           </div>
         </div>
       </div>
-      <!-- PICK TOPIC — fullscreen two-column -->
-      <div class="mp-pane" id="mpPickTopic">
-        <div class="mp-pick-layout">
-          <div class="mp-pick-sidebar">
-            <div class="mp-pick-sidebar-title">Setup</div>
-            <div class="mp-pick-label">Subject</div>
-            <div class="mp-subj-row">
-              <button
-                class="mp-subj-btn active"
-                id="mpSubjNS"
-                onclick="mpSetSubject('numbersense', this)"
-              >
-                🧮 NS
-              </button>
-              <button
-                class="mp-subj-btn"
-                id="mpSubjGM"
-                onclick="mpSetSubject('generalmath', this)"
-              >
-                📐 GM
-              </button>
-              <button
-                class="mp-subj-btn"
-                id="mpSubjSci"
-                onclick="mpSetSubject('science', this)"
-              >
-                🔬 Sci
-              </button>
-            </div>
-            <div class="mp-pick-label" style="margin-top: 12px">
-              Quick select
-            </div>
-            <div class="mp-quick-col">
-              <button class="mp-quick-btn" onclick="mpSelectAll()">
-                ✓ All
-              </button>
-              <button class="mp-quick-btn" onclick="mpSelectRandom5()">
-                🎲 Random 5
-              </button>
-              <button class="mp-quick-btn" onclick="mpClearTopics()">
-                ✕ Clear
-              </button>
-            </div>
-            <div class="mp-sel-count" id="mpSelCount">0 selected</div>
-            <button
-              class="mp-btn"
-              id="mpStartRaceBtn"
-              onclick="mpStartRace()"
-              disabled
-              style="margin-top: auto"
-            >
-              Start Race →
-            </button>
-            <div class="mp-status" id="mpPickStatus"></div>
-            <div class="mp-room-tag" id="mpPickRoomTag"></div>
-          </div>
-          <div class="mp-pick-main">
-            <div class="mp-pick-search-wrap">
-              <input
-                class="mp-pick-search"
-                id="mpTopicSearch"
-                placeholder="🔍 Search topics…"
-                oninput="mpFilterTopics(this.value)"
-              />
-            </div>
-            <div class="topic-select-grid" id="mpTopicGrid"></div>
-          </div>
-        </div>
+     
       </div>
 
       <!-- WAIT PANE -->
@@ -2818,36 +2711,54 @@
     </footer>
 
     <script>
-      function switchEvent(name, btn) {
+      function setTab(tab, btn) {
         try {
-          document
-            .querySelectorAll(".event-tab")
-            .forEach((b) => b.classList.remove("active"));
+          document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-          document
-            .querySelectorAll(".page")
-            .forEach((p) => p.classList.remove("active"));
-          const pageEl = document.getElementById("page-" + name);
-          if (pageEl) pageEl.classList.add("active");
 
-          const subNav = document.getElementById("subNav");
+          // Hide ALL sections first
+          const ns = document.getElementById("nsSection");
+          const gm = document.getElementById("gmSection");
+          const sci = document.getElementById("sciSection");
+          const banner = document.getElementById("mainBanner");
 
-          if (name === "numbersense") {
-            subNav.style.display = "flex";
-            document.getElementById("page-numbersense").classList.add("active");
+          if (ns) ns.style.display = "none";
+          if (gm) gm.style.display = "none";
+          if (sci) sci.style.display = "none";
+          if (banner) banner.style.display = "none";
+
+          // Also clear the topicGrid so old NS tiles don't bleed through
+          const tg = document.getElementById("topicGrid");
+          if (tg) tg.innerHTML = "";
+
+          if (tab === "random") {
+            if (ns) ns.style.display = "";
+            if (banner) banner.style.display = "";
             renderGrid([...T].sort(() => Math.random() - 0.5));
-          } else if (name === "generalmath") {
-            subNav.style.display = "none";
+          } else if (tab === "all") {
+            if (ns) ns.style.display = "";
+            if (banner) banner.style.display = "";
+            renderGrid(T);
+          } else if (tab === "genmath") {
+            if (gm) gm.style.display = "";
             buildGMPage();
-          } else if (name === "science") {
-            subNav.style.display = "none";
+            renderGMGrid(document.getElementById("gmSearch") ? document.getElementById("gmSearch").value : "");
+          } else if (tab === "science") {
+            if (sci) sci.style.display = "";
             buildSciPage();
-          } else {
-            subNav.style.display = "none";
+            renderSciGrid(document.getElementById("sciSearch") ? document.getElementById("sciSearch").value : "");
           }
         } catch (e) {
-          console.error("switchEvent error:", e);
+          console.error("setTab error:", e);
         }
+      }
+
+      function filterNS(val) {
+        try {
+          const q = val.toLowerCase();
+          const filtered = T.filter(t => t.label.toLowerCase().includes(q));
+          renderGrid(filtered);
+        } catch(e) { console.error(e); }
       }
 
       // Find switchAuthTab and replace it entirely:
@@ -2878,19 +2789,7 @@
         }
       }
 
-      function setTab(tab, btn) {
-        try {
-          document
-            .querySelectorAll("#subNav .nav-tab")
-            .forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          renderGrid(
-            tab === "random" ? [...T].sort(() => Math.random() - 0.5) : T,
-          );
-        } catch (e) {
-          console.error("setTab error:", e);
-        }
-      }
+     
 
       function openTopic(t) {
         try {
@@ -3061,15 +2960,19 @@
 
         MP.myName = name;
 
+        // Show NS section by default, hide others
+        document.getElementById("nsSection").style.display = "";
+        document.getElementById("gmSection").style.display = "none";
+        document.getElementById("sciSection").style.display = "none";
+        document.getElementById("mainBanner").style.display = "";
+
         renderGrid([...T].sort(() => Math.random() - 0.5));
-        buildGMPage();
+
         ["paneDrill", "paneResults"].forEach((id) => {
           document.getElementById(id).style.display = "none";
           document.getElementById(id).classList.remove("active");
         });
         document.getElementById("paneInfo").style.display = "flex";
-        document.getElementById("page-numbersense").classList.add("active");
-        document.querySelector(".theme-btn").textContent = themeLabels[1];
       };
 
       window.onUserLoggedOut = function () {
@@ -3815,7 +3718,7 @@
             el.className = "topic-tile";
             el.onclick = () => openTopic(t);
             el.innerHTML = `<div class="tile-label">${t.label}</div>
-<div class="tile-action">→</div>`;
+<div class="tile-action">?</div>`;
             g.appendChild(el);
           });
         } catch (e) {
@@ -3886,75 +3789,39 @@
           btn.textContent = v;
           btn.onclick = () => {
             gmActiveCat = k;
-            document
-              .querySelectorAll(".gm-cat-btn")
-              .forEach((b) => b.classList.remove("active"));
+            document.querySelectorAll(".gm-cat-btn").forEach((b) => b.classList.remove("active"));
             btn.classList.add("active");
-            renderGMCards(document.getElementById("gmSearch").value);
+            renderGMGrid(document.getElementById("gmSearch").value);
           };
           catRow.appendChild(btn);
         });
-        renderGMCards("");
+        renderGMGrid("");
       }
 
-      function renderGMCards(search) {
-        const list = document.getElementById("gmCardList");
-        const q = search.toLowerCase();
-        list.innerHTML = "";
-        TGM.forEach((t) => {
-          const cat = gmCategories[t.id] || "alg";
-          if (gmActiveCat !== "all" && cat !== gmActiveCat) return;
-          if (
-            q &&
-            !t.label.toLowerCase().includes(q) &&
-            !t.rule.toLowerCase().includes(q)
-          )
-            return;
-          const card = document.createElement("div");
-          card.className = "gm-card";
-          card.innerHTML = `
-      <div class="gm-card-top" onclick="toggleGMCard(this.parentElement)">
-        <div class="gm-card-icon">${gmIcons[cat] || "📋"}</div>
-        <div class="gm-card-title">${t.label}</div>
-        <span class="gm-card-tag tag-${cat}">${gmCatLabels[cat]}</span>
-        <span class="gm-card-chevron">▶</span>
-      </div>
-      <div class="gm-card-body">
-        <div class="gm-formula-box">${t.rule}</div>
-        <div class="gm-examples-row">${t.ex.map((e) => `<span class="gm-ex-chip">${e}</span>`).join("")}</div>
-        <button class="gm-drill-btn" onclick="openTopic(TGM.find(x=>x.id==='${t.id}'))">▶ Drill this topic</button>
-      </div>
-    `;
-          list.appendChild(card);
-        });
-        if (!list.children.length) {
-          list.innerHTML =
-            '<div style="text-align:center;padding:40px;color:var(--text3);font-size:14px">No topics match.</div>';
-        }
-      }
-
-      function toggleGMCard(card) {
-        card.classList.toggle("open");
-      }
-
-      function filterGM(val) {
-        renderGMCards(val);
-      }
-
-      function renderGMGrid(topics) {}
-      function setGMTab(tab, btn) {}
-
-      function renderGMGrid(topics) {
+      function renderGMGrid(search) {
         const g = document.getElementById("gmTopicGrid");
+        const q = search.toLowerCase();
         g.innerHTML = "";
-        topics.forEach((t) => {
+        TGM.forEach((t) => {
+          const cat = t.cat || gmCategories[t.id] || "alg";
+          if (gmActiveCat !== "all" && cat !== gmActiveCat) return;
+          if (q && !t.label.toLowerCase().includes(q) && !t.rule.toLowerCase().includes(q)) return;
           const el = document.createElement("div");
           el.className = "topic-tile";
           el.onclick = () => openTopic(t);
           el.innerHTML = `<div class="tile-label">${t.label}</div><div class="tile-action">?</div>`;
           g.appendChild(el);
         });
+        if (!g.children.length) {
+          g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);font-size:14px">No topics match.</div>';
+        }
       }
+
+      function filterGM(val) {
+        renderGMGrid(val);
+      }
+
+     
 
       function showPane(id) {
         try {
@@ -12629,52 +12496,36 @@ Strip mining effects: removes topsoil, destroys habitat, causes stream siltation
           btn.textContent = v;
           btn.onclick = () => {
             sciActiveCat = k;
-            document
-              .querySelectorAll("#sciCatRow .gm-cat-btn")
-              .forEach((b) => b.classList.remove("active"));
+            document.querySelectorAll("#sciCatRow .gm-cat-btn").forEach((b) => b.classList.remove("active"));
             btn.classList.add("active");
-            renderSciCards(document.getElementById("sciSearch").value);
+            renderSciGrid(document.getElementById("sciSearch").value);
           };
           catRow.appendChild(btn);
         });
-        renderSciCards("");
+        renderSciGrid("");
       }
 
-      function renderSciCards(search) {
-        const list = document.getElementById("sciCardList");
-        if (!list) return;
+      function renderSciGrid(search) {
+        const g = document.getElementById("sciTopicGrid");
+        if (!g) return;
         const q = search.toLowerCase();
-        list.innerHTML = "";
+        g.innerHTML = "";
         TSCI.forEach((t) => {
           if (sciActiveCat !== "all" && t.cat !== sciActiveCat) return;
-          if (
-            q &&
-            !t.label.toLowerCase().includes(q) &&
-            !t.rule.toLowerCase().includes(q)
-          )
-            return;
-          const card = document.createElement("div");
-          card.className = "gm-card";
-          const cat = t.cat || "method";
-          card.innerHTML = `
-    <div class="gm-card-top" onclick="toggleGMCard(this.parentElement)">
-        <div class="gm-card-icon">${sciIcons[cat] || "🔬"}</div>
-        <div class="gm-card-title">${t.label}</div>
-        <span class="gm-card-tag tag-${sciCatToTag(cat)}">${sciCatLabels[cat] || cat}</span>
-        <span class="gm-card-chevron">▶</span>
-    </div>
-    <div class="gm-card-body">
-        <div class="gm-formula-box">${t.rule}</div>
-        <div class="gm-examples-row">${t.ex.map((e) => `<span class="gm-ex-chip">${e}</span>`).join("")}</div>
-        <button class="gm-drill-btn" onclick="openSciTopic('${t.id}')">▶ Drill this topic</button>
-    </div>
-    `;
-          list.appendChild(card);
+          if (q && !t.label.toLowerCase().includes(q) && !t.rule.toLowerCase().includes(q)) return;
+          const el = document.createElement("div");
+          el.className = "topic-tile";
+          el.onclick = () => openSciTopic(t.id);
+          el.innerHTML = `<div class="tile-label">${t.label}</div><div class="tile-action">?</div>`;
+          g.appendChild(el);
         });
-        if (!list.children.length) {
-          list.innerHTML =
-            '<div style="text-align:center;padding:40px;color:var(--text3);font-size:14px">No topics match.</div>';
+        if (!g.children.length) {
+          g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);font-size:14px">No topics match.</div>';
         }
+      }
+
+      function filterSci(val) {
+        renderSciGrid(val);
       }
 
       function sciCatToTag(cat) {
@@ -12694,9 +12545,7 @@ Strip mining effects: removes topsoil, destroys habitat, causes stream siltation
         return map[cat] || "alg";
       }
 
-      function filterSci(val) {
-        renderSciCards(val);
-      }
+  
 
       function openSciTopic(id) {
         const t = TSCI.find((x) => x.id === id);
