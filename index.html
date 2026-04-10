@@ -1,5 +1,6 @@
+
 <html lang="en" data-theme="default">
-  <head>
+  <head><script type="text/javascript" src="/___vscode_livepreview_injected_script"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TMSCA Practice</title>
@@ -2184,11 +2185,11 @@
       >
         <div
           style="
-            background: #fff;
+            background: #ffffff;
             border-radius: 24px;
             padding: 36px 32px;
             width: 100%;
-            max-width: 400px;
+            min-width: 405px;
             box-shadow: 0 8px 40px rgba(180, 100, 0, 0.15);
             display: flex;
             flex-direction: column;
@@ -3707,7 +3708,7 @@
       let curTopic = null;
       const DRILL_N = 5;
       let D = {};
-
+        let _answerTimeout = null;
       function renderGrid(topics) {
         try {
           const g = document.getElementById("topicGrid");
@@ -6624,6 +6625,10 @@ Example: two secants from outside, far arc=110°, near arc=40°
             .classList.toggle("show", isMultiplayer);
           document.getElementById("winnerBanner").classList.remove("show");
           document.getElementById("waitingScreen").classList.remove("show");
+          document.getElementById("answerKeyBox").classList.remove("show");
+document.getElementById("dInput").disabled = false;
+if (document.querySelector(".drill-submit")) document.querySelector(".drill-submit").disabled = false;
+D.wrongAttempts = 0;
           showPane("paneDrill");
           document.getElementById("dCounter").textContent = `1/${DRILL_N}`;
           document.getElementById("dBigClock").textContent = "00:00.00";
